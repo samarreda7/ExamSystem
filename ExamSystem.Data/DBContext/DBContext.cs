@@ -16,7 +16,10 @@ namespace ExamSystem.Data.DBContext
         public DbSet<Subject> subjects { get; set; }
         public DbSet<ExamQuestion> exam_questions { get; set; }
         public DbSet<ExamGroup> exam_groups { get; set; }
-
+        public DbSet<Exam> exams { get; set; }
+        public DbSet<Group> groups { get; set; }
+        public DbSet<Question> questions { get; set; }
+        public DbSet<QuestionOption> question_options { get; set; }
 
 
 

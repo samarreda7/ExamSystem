@@ -15,7 +15,8 @@ namespace ExamSystem.Data.DBContext.Configurations
         {
             builder.ToTable("users");
             builder.HasKey(u => u.Id);
-            builder.Property(u => u.Id);
+            builder.Property(u => u.Id)
+                    .ValueGeneratedNever();
 
 
             builder.HasIndex(u => u.Username).IsUnique();

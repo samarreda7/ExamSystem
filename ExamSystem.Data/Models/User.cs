@@ -19,7 +19,8 @@ namespace ExamSystem.Data.Models
         public UserType Type { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-
+        public Teacher Teacher { get; set; }
+        public Student Student { get; set; }
 
     }
 }
