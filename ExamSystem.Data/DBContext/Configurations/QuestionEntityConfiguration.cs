@@ -31,7 +31,9 @@ namespace ExamSystem.Data.DBContext.Configurations
             builder.Property(e => e.TeacherUserId).IsRequired();
             builder.HasOne(t => t.Teacher)
                 .WithMany(e => e.Questions)
-                .HasForeignKey(e => e.TeacherUserId);
+                .HasForeignKey(e => e.TeacherUserId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
 
 
             builder.Property(u => u.CreatedAt)

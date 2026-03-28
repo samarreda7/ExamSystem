@@ -18,12 +18,15 @@ namespace ExamSystem.Data.DBContext.Configurations
             builder.Property(e => e.SubjectId).IsRequired();
             builder.HasOne(t => t.Subject)
                 .WithMany(e => e.Groups)
-                .HasForeignKey(e => e.SubjectId);
+                .HasForeignKey(e => e.SubjectId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.Property(e => e.TeacherUserId).IsRequired();
             builder.HasOne(t => t.Teacher)
                 .WithMany(e => e.Groups)
-                .HasForeignKey(e => e.TeacherUserId);
+                .HasForeignKey(e => e.TeacherUserId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
 
             builder.Property(u => u.CreatedAt)
             .IsRequired()

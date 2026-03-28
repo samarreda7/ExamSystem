@@ -83,8 +83,7 @@ namespace ExamSystem.Data.Migrations
                         name: "FK_exams_teachers_TeacherUserId",
                         column: x => x.TeacherUserId,
                         principalTable: "teachers",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "UserId");
                 });
 
             migrationBuilder.CreateTable(
@@ -104,14 +103,12 @@ namespace ExamSystem.Data.Migrations
                         name: "FK_groups_subjects_SubjectId",
                         column: x => x.SubjectId,
                         principalTable: "subjects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_groups_teachers_TeacherUserId",
                         column: x => x.TeacherUserId,
                         principalTable: "teachers",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "UserId");
                 });
 
             migrationBuilder.CreateTable(
@@ -139,8 +136,7 @@ namespace ExamSystem.Data.Migrations
                         name: "FK_questions_teachers_TeacherUserId",
                         column: x => x.TeacherUserId,
                         principalTable: "teachers",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "UserId");
                 });
 
             migrationBuilder.CreateTable(

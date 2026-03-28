@@ -285,7 +285,7 @@ namespace ExamSystem.Data.Migrations
                     b.HasOne("ExamSystem.Domain.Models.Teacher", "Teacher")
                         .WithMany("Exams")
                         .HasForeignKey("TeacherUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Teacher");
@@ -334,13 +334,13 @@ namespace ExamSystem.Data.Migrations
                     b.HasOne("ExamSystem.Domain.Models.Subject", "Subject")
                         .WithMany("Groups")
                         .HasForeignKey("SubjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("ExamSystem.Domain.Models.Teacher", "Teacher")
                         .WithMany("Groups")
                         .HasForeignKey("TeacherUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Subject");
@@ -359,7 +359,7 @@ namespace ExamSystem.Data.Migrations
                     b.HasOne("ExamSystem.Domain.Models.Teacher", "Teacher")
                         .WithMany("Questions")
                         .HasForeignKey("TeacherUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Subject");
