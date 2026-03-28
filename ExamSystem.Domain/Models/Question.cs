@@ -1,11 +1,11 @@
-﻿using ExamSystem.Data.ValueTypes;
+﻿using ExamSystem.Domain.ValueTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ExamSystem.Data.Models
+namespace ExamSystem.Domain.Models
 {
     public class Question
     {

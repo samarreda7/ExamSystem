@@ -1,4 +1,4 @@
-﻿using ExamSystem.Data.Models;
+﻿using ExamSystem.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -6,9 +6,9 @@ using System.Reflection;
 
 namespace ExamSystem.Data.DBContext
 {
-    public class DBContext : DbContext
+    public class AppDBContext : DbContext
     {
-        public DBContext(DbContextOptions<DBContext> options):base(options) { }
+        public AppDBContext(DbContextOptions<AppDBContext> options):base(options) { }
 
         public DbSet<User> users { get; set; }
         public DbSet<Teacher> teachers { get; set; }

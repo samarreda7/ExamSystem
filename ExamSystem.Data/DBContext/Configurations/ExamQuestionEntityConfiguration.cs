@@ -1,4 +1,4 @@
-﻿using ExamSystem.Data.Models;
+﻿using ExamSystem.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
