@@ -10,6 +10,10 @@ public interface IUnitOfWork : IDisposable
     ISubjectRepository Subjects { get; }
     IQuestionRepository Questions { get; }
     IQuestionOptionRepository QuestionOptions { get; }
+    IExamQuestionRepository ExamQuestions { get; }
+    IExamGroupRepository ExamGroups { get; }
+
+
 
 
 

@@ -14,7 +14,8 @@ namespace ExamSystem.Data.Repository
         public ISubjectRepository Subjects { get; }
         public IQuestionRepository Questions { get; }
         public IQuestionOptionRepository QuestionOptions { get; }
-
+        public IExamQuestionRepository ExamQuestions { get; }
+        public IExamGroupRepository ExamGroups { get; }
 
 
 
@@ -31,7 +32,8 @@ namespace ExamSystem.Data.Repository
             Subjects = new SubjectRepository(context);
             Questions = new QuestionRepository(context);
             QuestionOptions = new QuestionOptionRepository(context);
-
+            ExamQuestions = new ExamQuestionRepository(context);
+            ExamGroups = new ExamGroupRepository(context);
 
         }
 
