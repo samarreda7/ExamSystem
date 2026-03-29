@@ -19,10 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Repository\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\ExamSystem.Domain\ExamSystem.Domain.csproj" />
   </ItemGroup>
 
