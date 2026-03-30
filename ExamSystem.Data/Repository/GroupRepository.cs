@@ -43,5 +43,9 @@ namespace ExamSystem.Data.Repository
             return Task.CompletedTask;
 
         }
+        public async Task<bool> IsGroupExistAsync(Guid groupId)
+        {
+            return await _dbSet.FirstOrDefaultAsync(x => x.Id == groupId) != null;
+        }
     }
 }

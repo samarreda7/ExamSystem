@@ -51,5 +51,13 @@ namespace ExamSystem.Data.Repository
             return Task.CompletedTask;
 
         }
+        public async Task<bool> IsUsernameExist(string username)
+        {
+            return await _dbSet.FirstOrDefaultAsync(x => x.Username == username) != null;
+        }
+        public async Task<bool> IsEmailExist(string email)
+        {
+            return await _dbSet.FirstOrDefaultAsync(x => x.Email == email) != null;
+        }
     }
 }

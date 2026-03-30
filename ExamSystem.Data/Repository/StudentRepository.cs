@@ -46,9 +46,7 @@ namespace ExamSystem.Data.Repository
         {
             _dbSet.Update(entity);
             return Task.CompletedTask;
-
-
-
         }
+
     }
 }

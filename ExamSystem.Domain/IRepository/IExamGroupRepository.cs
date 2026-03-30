@@ -16,7 +16,6 @@ namespace ExamSystem.Domain.IRepository
         Task<IEnumerable<ExamGroup>> GetByExamAsync(Guid examId);
         Task<IEnumerable<ExamGroup>> GetByGroupAsync(Guid groupId);
         Task UpdateAsync(ExamGroup entity);
-
         Task DeleteAsync(Guid examId, Guid groupId);
     }
 }

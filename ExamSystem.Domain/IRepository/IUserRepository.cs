@@ -17,6 +17,8 @@ namespace ExamSystem.Domain.IRepository
         Task UpdateAsync(User entity);
 
         Task DeleteAsync(Guid id);
+        Task<bool> IsUsernameExist(string username);
+        Task<bool> IsEmailExist(string email);
 
     }
 }
