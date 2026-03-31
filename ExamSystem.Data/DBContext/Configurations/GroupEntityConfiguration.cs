@@ -14,6 +14,10 @@ namespace ExamSystem.Data.DBContext.Configurations
             builder.HasKey(u => u.Id);
             builder.Property(u => u.Id)
                    .ValueGeneratedOnAdd();
+            builder.Property(g => g.Name)
+                   .IsRequired()
+                   .HasMaxLength(100);
+
 
             builder.Property(e => e.SubjectId).IsRequired();
             builder.HasOne(t => t.Subject)

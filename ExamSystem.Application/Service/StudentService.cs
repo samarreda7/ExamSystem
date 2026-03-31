@@ -60,5 +60,18 @@ namespace ExamSystem.Application.Service
 
         }
        
+        public async Task<IEnumerable<showStudentDto>> GetStudentWithAlldetails()
+        {
+            var students = await _unitofwork.Students.GetAllWithDetailsAsync();
+            return students.Select(s => new showStudentDto {
+                Id = s.UserId,
+                FirstName = s.User.FirstName,
+                LastName = s.User.LastName,
+                PhoneNumber = s.User.PhoneNumber,
+                Email = s.User.Email,
+                Username=s.User.Username,
+                GroupName=s.Group.Name,
+            });
+        }
     }
 }

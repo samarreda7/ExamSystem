@@ -26,6 +26,21 @@ namespace ExamSystem.Data.Repository
         {
             return await _dbSet.ToListAsync();
         }
+        public async Task<IEnumerable<ShowStudentDto>> GetAllWithDetailsAsync()
+        {
+            return await _dbSet
+      .Select(s => new ShowStudentDto
+      {
+          Id = s.UserId,
+          FirstName = s.User.FirstName,
+          LastName = s.User.LastName,
+          PhoneNumber = s.User.PhoneNumber,
+          Email = s.User.Email,
+          Username = s.User.Username,
+          GroupName = s.Group.Name
+      })
+      .ToListAsync();
+        }
 
         public async Task<Student?> GetByIdAsync(Guid id)
         {

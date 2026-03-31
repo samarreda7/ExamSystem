@@ -11,6 +11,7 @@ namespace ExamSystem.Domain.IRepository
     {
         Task AddAsync(Student entity);
         Task<IEnumerable<Student>> GetAllAsync();
+        Task<IEnumerable<Student>> GetAllWithDetailsAsync();
 
         Task<Student?> GetByIdAsync(Guid id);
 

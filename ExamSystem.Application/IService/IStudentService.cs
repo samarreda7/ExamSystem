@@ -10,6 +10,7 @@ namespace ExamSystem.Application.IService
     public interface IStudentService
     {
         Task AddStudentAsync(studentDto user);
+        Task<IEnumerable<showStudentDto>> GetStudentWithAlldetails();
     }
 }
  
