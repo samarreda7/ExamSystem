@@ -7,16 +7,8 @@ using System.Threading.Tasks;
 
 namespace ExamSystem.Domain.IRepository
 {
-    public interface IUserRepository
+    public interface IUserRepository : IBaseRepository<User>
     {
-        Task AddAsync(User entity);
-        Task<IEnumerable<User>> GetAllAsync();
-
-        Task<User?> GetByIdAsync (Guid id);
-
-        Task UpdateAsync(User entity);
-
-        Task DeleteAsync(Guid id);
         Task<bool> IsUsernameExist(string username);
         Task<bool> IsEmailExist(string email);
 

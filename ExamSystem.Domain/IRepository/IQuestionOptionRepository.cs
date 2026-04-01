@@ -7,15 +7,8 @@ using System.Threading.Tasks;
 
 namespace ExamSystem.Domain.IRepository
 {
-    public interface IQuestionOptionRepository
+    public interface IQuestionOptionRepository : IBaseRepository<QuestionOption>
     {
-        Task AddAsync(QuestionOption entity);
-        Task<IEnumerable<QuestionOption>> GetAllAsync();
-
-        Task<QuestionOption?> GetByIdAsync(Guid id);
-
-        Task UpdateAsync(QuestionOption entity);
-
-        Task DeleteAsync(Guid id);
+ 
     }
 }

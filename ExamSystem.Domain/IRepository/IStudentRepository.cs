@@ -7,16 +7,10 @@ using System.Threading.Tasks;
 
 namespace ExamSystem.Domain.IRepository
 {
-    public interface IStudentRepository
+    public interface IStudentRepository : IBaseRepository<Student>
     {
-        Task AddAsync(Student entity);
-        Task<IEnumerable<Student>> GetAllAsync();
+
         Task<IEnumerable<Student>> GetAllWithDetailsAsync();
 
-        Task<Student?> GetByIdAsync(Guid id);
-
-        Task UpdateAsync(Student entity);
-
-        Task DeleteAsync(Guid id);
     }
 }

@@ -7,15 +7,8 @@ using System.Threading.Tasks;
 
 namespace ExamSystem.Domain.IRepository
 {
-    public interface ITeacherRepository
+    public interface ITeacherRepository : IBaseRepository<Teacher>
     {
-        Task AddAsync(Teacher entity);
-        Task<IEnumerable<Teacher>> GetAllAsync();
 
-        Task<Teacher?> GetByIdAsync(Guid id);
-
-        Task UpdateAsync(Teacher entity);
-
-        Task DeleteAsync(Guid id);
     }
 }

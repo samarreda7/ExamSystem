@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ExamSystem.Application.DTO
 {
-    public class showStudentDto
+    public class ShowStudentDto
     {
         public Guid Id { get; set; }
         public String FirstName { get; set; }

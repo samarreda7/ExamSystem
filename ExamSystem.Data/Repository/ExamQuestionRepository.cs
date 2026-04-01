@@ -5,25 +5,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExamSystem.Data.Repository
 {
-    public class ExamQuestionRepository : IExamQuestionRepository
+    public class ExamQuestionRepository : BaseRepository<ExamQuestion>, IExamQuestionRepository
     {
-        private readonly DbSet<ExamQuestion> _dbSet;
+        public ExamQuestionRepository(AppDBContext context) : base(context) { }
 
-        public ExamQuestionRepository(AppDBContext context)
-        {
-            _dbSet = context.Set<ExamQuestion>();
-        }
-
-        public Task AddAsync(ExamQuestion entity)
-        {
-            _dbSet.Add(entity);
-            return Task.CompletedTask;
-
-        }
-        public async Task<IEnumerable<ExamQuestion>> GetAllAsync()
-        {
-            return await _dbSet.ToListAsync();
-        }
 
         public async Task<ExamQuestion?> GetByIdAsync(Guid examId, Guid questionId)
         {
@@ -42,21 +27,5 @@ namespace ExamSystem.Data.Repository
                    .ToListAsync();
         }
 
-        public async Task DeleteAsync(Guid examId, Guid questionId)
-        {
-            var entity = await GetByIdAsync(examId,questionId);
-            if (entity != null)
-            {
-                _dbSet.Remove(entity);
-
-            }
-        }
-
-        public Task UpdateAsync(ExamQuestion entity)
-        {
-            _dbSet.Update(entity);
-            return Task.CompletedTask;
-
-        }
     }
 }

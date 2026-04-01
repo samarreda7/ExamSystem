@@ -1,5 +1,7 @@
 ﻿using ExamSystem.Data.DBContext;
 using ExamSystem.Domain.IRepository;
+using ExamSystem.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ExamSystem.Data.Repository
 {
@@ -36,7 +38,7 @@ namespace ExamSystem.Data.Repository
             ExamGroups = new ExamGroupRepository(context);
 
         }
-
+     
         public async Task<int> SaveChangesAsync() =>
                    await _Context.SaveChangesAsync();
 

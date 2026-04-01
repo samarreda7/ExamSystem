@@ -7,16 +7,9 @@ using System.Threading.Tasks;
 
 namespace ExamSystem.Domain.IRepository
 {
-    public interface IGroupRepository
+    public interface IGroupRepository : IBaseRepository<Group>
     {
-        Task AddAsync(Group entity);
-        Task<IEnumerable<Group>> GetAllAsync();
-
-        Task<Group?> GetByIdAsync(Guid id);
-
-        Task UpdateAsync(Group entity);
-
-        Task DeleteAsync(Guid id);
+  
         Task<bool> IsGroupExistAsync(Guid groupId);
     }
 }

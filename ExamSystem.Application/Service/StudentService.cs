@@ -15,12 +15,12 @@ namespace ExamSystem.Application.Service
             _unitofwork = unitofwork;
         }
 
-        public async Task AddStudentAsync(studentDto user)
+        public async Task AddStudentAsync(CreateStudentDto user)
         {
             var passwordHasher = new PasswordHasher<User>();
-            if (user == null) 
+            if (user == null)
             {
-            throw new ArgumentNullException(nameof(user));
+                throw new ArgumentNullException(nameof(user));
             }
             bool isEmailExist = await _unitofwork.Users.IsEmailExist(user.Email);
             if (isEmailExist)
@@ -42,7 +42,7 @@ namespace ExamSystem.Application.Service
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 PhoneNumber = user.PhoneNumber,
-                Username =user.Username,
+                Username = user.Username,
                 Email = user.Email,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
@@ -54,23 +54,24 @@ namespace ExamSystem.Application.Service
                 UserId = newuser.Id,
                 GroupId = user.GroupId,
             };
-          await  _unitofwork.Users.AddAsync(newuser);
-          await  _unitofwork.Students.AddAsync(student);
-          await  _unitofwork.SaveChangesAsync();
+            await _unitofwork.Users.AddAsync(newuser);
+            await _unitofwork.Students.AddAsync(student);
+            await _unitofwork.SaveChangesAsync();
 
         }
-       
-        public async Task<IEnumerable<showStudentDto>> GetStudentWithAlldetails()
+
+        public async Task<IEnumerable<ShowStudentDto>> GetStudentsWithAllDetailsAsync()
         {
             var students = await _unitofwork.Students.GetAllWithDetailsAsync();
-            return students.Select(s => new showStudentDto {
+            return students.Select(s => new ShowStudentDto
+            {
                 Id = s.UserId,
                 FirstName = s.User.FirstName,
                 LastName = s.User.LastName,
                 PhoneNumber = s.User.PhoneNumber,
                 Email = s.User.Email,
-                Username=s.User.Username,
-                GroupName=s.Group.Name,
+                Username = s.User.Username,
+                GroupName = s.Group.Name,
             });
         }
     }
