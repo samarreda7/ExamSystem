@@ -12,6 +12,6 @@ namespace ExamSystem.Domain.IRepository
 
         Task<IEnumerable<Student>> GetAllWithDetailsAsync();
         Task<Student?> GetStudentDetailsById(Guid Id);
-
+       
     }
 }

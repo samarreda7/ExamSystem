@@ -23,5 +23,14 @@ namespace ExamSystem.Data.Repository
         {
             return await _dbSet.FirstOrDefaultAsync(x => x.Email == email) != null;
         }
+        public async Task<bool> IsEmailExistForAnotherUser(string email, Guid excludeUserId)
+        {
+            return await _dbSet.AnyAsync(u => u.Email == email && u.Id != excludeUserId);
+        }
+
+        public async Task<bool> IsUsernameExistForAnotherUser(string username, Guid excludeUserId)
+        {
+            return await _dbSet.AnyAsync(u => u.Username == username && u.Id != excludeUserId);
+        }
     }
 }

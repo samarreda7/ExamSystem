@@ -93,5 +93,44 @@ namespace ExamSystem.Application.Service
                 GroupName = student.Group.Name,
             };
         }
+
+        public async Task UpdateStudentAsync(Guid id, UpdateStudentDto dto)
+        {
+            var student = await _unitofwork.Students.GetStudentDetailsById(id);
+            if (student == null)
+            {
+                throw new KeyNotFoundException($"There is no student with this {id}");
+            }
+            if (dto == null)
+            {
+                throw new ArgumentNullException(nameof(dto), "Update data cannot be null.");
+            }
+            bool isEmailExist = await _unitofwork.Users.IsEmailExistForAnotherUser(dto.Email,id);
+            if (isEmailExist)
+            {
+                throw new InvalidOperationException("Email is already exist");
+            }
+            bool isUsernameExist = await _unitofwork.Users.IsUsernameExistForAnotherUser(dto.Username, id);
+            if (isUsernameExist)
+            {
+                throw new InvalidOperationException("Username is already exist");
+            }
+            bool isGroupExist = await _unitofwork.Groups.IsGroupExistAsync(dto.GroupId);
+            if (!isGroupExist)
+            {
+                throw new KeyNotFoundException($"There is no group with Id: {dto.GroupId}");
+            }
+
+            student.User.FirstName = dto.FirstName;
+            student.User.LastName = dto.LastName;
+            student.User.PhoneNumber = dto.PhoneNumber;
+            student.User.Email = dto.Email;
+            student.User.Username = dto.Username;
+            student.GroupId = dto.GroupId;
+            student.User.UpdatedAt = DateTime.UtcNow;
+
+            await _unitofwork.Students.UpdateAsync(student);
+            await _unitofwork.SaveChangesAsync();
+        }
     }
 }
