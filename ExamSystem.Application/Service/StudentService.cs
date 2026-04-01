@@ -74,5 +74,24 @@ namespace ExamSystem.Application.Service
                 GroupName = s.Group.Name,
             });
         }
+
+        public async Task<ShowStudentDto> GetStudentByIdAsync(Guid id)
+        {
+            var student = await _unitofwork.Students.GetStudentDetailsById(id);
+            if (student == null)
+            {
+                throw new KeyNotFoundException($"There is no student with this {id}");
+            }
+            return new ShowStudentDto
+            {
+                Id = student.UserId,
+                FirstName = student.User.FirstName,
+                LastName = student.User.LastName,
+                PhoneNumber = student.User.PhoneNumber,
+                Email = student.User.Email,
+                Username = student.User.Username,
+                GroupName = student.Group.Name,
+            };
+        }
     }
 }
