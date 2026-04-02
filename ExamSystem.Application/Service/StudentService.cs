@@ -145,5 +145,25 @@ namespace ExamSystem.Application.Service
             await _unitofwork.Users.DeleteAsync(user);
             await _unitofwork.SaveChangesAsync();
         }
+        public async Task<IEnumerable<ShowStudentDto>> GetStudentsByGroupIdAsync(Guid groupId)
+        {
+            bool isGroupExist = await _unitofwork.Groups.IsGroupExistAsync(groupId);
+            if (!isGroupExist)
+            {
+                throw new KeyNotFoundException($"There is no group with Id: {groupId}");
+            }
+            var students = await _unitofwork.Students.GetStudentsByGroupIdAsync(groupId);
+              return students.Select(s => new ShowStudentDto
+              {
+                  Id = s.UserId,
+                  FirstName = s.User.FirstName,
+                  LastName = s.User.LastName,
+                  PhoneNumber = s.User.PhoneNumber,
+                  Email = s.User.Email,
+                  Username = s.User.Username,
+                  GroupName = s.Group.Name,
+              });
+        }
     }
+
 }

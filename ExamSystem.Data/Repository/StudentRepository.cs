@@ -12,19 +12,26 @@ namespace ExamSystem.Data.Repository
         public StudentRepository(AppDBContext context) : base(context) { }
 
 
-     
+
         public async Task<IEnumerable<Student>> GetAllWithDetailsAsync()
         {
-            return await _dbSet.Include(s=>s.User)
-                .Include(s=>s.Group)
+            return await _dbSet.Include(s => s.User)
+                .Include(s => s.Group)
                 .ToListAsync();
         }
         public async Task<Student?> GetStudentDetailsById(Guid Id)
         {
-            return await _dbSet.Where(s=>s.UserId==Id)
+            return await _dbSet.Where(s => s.UserId == Id)
                 .Include(s => s.User)
                 .Include(s => s.Group)
                 .FirstOrDefaultAsync();
+        }
+        public async Task<IEnumerable<Student>> GetStudentsByGroupIdAsync(Guid groupId)
+        {
+            return await _dbSet.Where(s => s.GroupId == groupId)
+                .Include(s => s.Group)
+                .Include(s => s.User)
+                .ToListAsync();
         }
 
 
