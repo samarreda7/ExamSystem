@@ -32,11 +32,6 @@ namespace ExamSystem.Application.Service
             {
                 throw new InvalidOperationException("Username is already exist");
             }
-            bool isGroupExist = await _unitofwork.Groups.IsGroupExistAsync(user.GroupId);
-            if (!isGroupExist)
-            {
-                throw new KeyNotFoundException($"There is no group with Id: {user.GroupId}");
-            }
             var newuser = new User
             {
                 FirstName = user.FirstName,
@@ -52,7 +47,6 @@ namespace ExamSystem.Application.Service
             var student = new Student
             {
                 UserId = newuser.Id,
-                GroupId = user.GroupId,
             };
             await _unitofwork.Users.AddAsync(newuser);
             await _unitofwork.Students.AddAsync(student);
@@ -71,7 +65,7 @@ namespace ExamSystem.Application.Service
                 PhoneNumber = s.User.PhoneNumber,
                 Email = s.User.Email,
                 Username = s.User.Username,
-                GroupName = s.Group.Name,
+                GroupName = s.Group?.Name ?? "Unassigned",
             });
         }
 
@@ -90,7 +84,7 @@ namespace ExamSystem.Application.Service
                 PhoneNumber = student.User.PhoneNumber,
                 Email = student.User.Email,
                 Username = student.User.Username,
-                GroupName = student.Group.Name,
+                GroupName = student.Group?.Name ?? "Unassigned",
             };
         }
 
@@ -134,8 +128,7 @@ namespace ExamSystem.Application.Service
         }
         public async Task DeleteStudentAsync(Guid id)
         {
-            var student = await _unitofwork.Students.GetByIdAsync(id);
-            var user = await _unitofwork.Users.GetByIdAsync(id);
+            var student = await _unitofwork.Students.GetStudentDetailsById(id);
 
             if (student == null)
             {
@@ -161,9 +154,10 @@ namespace ExamSystem.Application.Service
                   PhoneNumber = s.User.PhoneNumber,
                   Email = s.User.Email,
                   Username = s.User.Username,
-                  GroupName = s.Group.Name,
+                  GroupName = s.Group?.Name ?? "Unassigned",
               });
         }
+
     }
 
 }
