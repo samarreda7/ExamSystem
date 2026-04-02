@@ -99,5 +99,38 @@ namespace ExamSystem.Application.Service
                 ExamsCount = teacher.Exams.Count,
             };
         }
+        public async Task DeleteTeacherAsync(Guid id)
+        {
+            var teacher = await _unitofwork.Teachers.GetTeacherDetailsById(id);
+            var user = await _unitofwork.Users.GetByIdAsync(id);
+
+            if (teacher == null)
+            {
+                throw new KeyNotFoundException($"There is no teacher with this {id}");
+            }
+
+            if (user == null)
+            {
+                throw new KeyNotFoundException($"There is no user with this {id}");
+            }
+            if (teacher.Groups != null && teacher.Groups.Any())
+            {
+                throw new InvalidOperationException(
+                    "Cannot delete this teacher because they are assigned to one or more groups."
+                );
+            }
+            foreach (var exam in teacher.Exams)
+            {
+                await _unitofwork.Exams.DeleteAsync(exam);
+            }
+            foreach (var question in teacher.Questions)
+            {
+                await _unitofwork.Questions.DeleteAsync(question);
+            }
+
+            await _unitofwork.Teachers.DeleteAsync(teacher);
+            await _unitofwork.Users.DeleteAsync(user);
+            await _unitofwork.SaveChangesAsync();
+        }
     }
 }
