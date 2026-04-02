@@ -18,6 +18,8 @@ namespace ExamSystem.Data.Repository
         {
             return await _dbSet.Include(s => s.User)
                 .Include(s => s.Subject)
+                .Include(e=>e.Exams)
+                .Include(g => g.Groups)
                 .ToListAsync();
         }
 
