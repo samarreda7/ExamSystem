@@ -109,18 +109,12 @@ namespace ExamSystem.Application.Service
             {
                 throw new InvalidOperationException("Username is already exist");
             }
-            bool isGroupExist = await _unitofwork.Groups.IsGroupExistAsync(dto.GroupId);
-            if (!isGroupExist)
-            {
-                throw new KeyNotFoundException($"There is no group with Id: {dto.GroupId}");
-            }
 
             student.User.FirstName = dto.FirstName;
             student.User.LastName = dto.LastName;
             student.User.PhoneNumber = dto.PhoneNumber;
             student.User.Email = dto.Email;
             student.User.Username = dto.Username;
-            student.GroupId = dto.GroupId;
             student.User.UpdatedAt = DateTime.UtcNow;
 
             await _unitofwork.Students.UpdateAsync(student);
