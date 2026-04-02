@@ -9,6 +9,7 @@ namespace ExamSystem.Application.IService
 {
     public interface ITeacherService
     {
-        Task AddTeacherAsync(CreateTeacherDto user);
+        Task AddTeacherAsync(CreateTeacherDto teacherDto);
+        Task<IEnumerable<ShowTeacherDto>> GetTeachersWithAllDetailsAsync();
     }
 }

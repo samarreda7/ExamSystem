@@ -63,5 +63,21 @@ namespace ExamSystem.Application.Service
             await _unitofwork.SaveChangesAsync();
 
         }
+        public async Task<IEnumerable<ShowTeacherDto>> GetTeachersWithAllDetailsAsync()
+        {
+            var teachers = await _unitofwork.Teachers.GetAllWithDetailsAsync();
+            return teachers.Select(t => new ShowTeacherDto
+            {
+                Id = t.UserId,
+                FirstName = t.User.FirstName,
+                LastName = t.User.LastName,
+                PhoneNumber = t.User.PhoneNumber,
+                Email = t.User.Email,
+                Username = t.User.Username,
+                SubjectName = t.Subject.Name,
+                GroupsCount = t.Groups.Count,
+                ExamsCount = t.Exams.Count,
+            });
+        }
     }
 }
