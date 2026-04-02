@@ -32,6 +32,15 @@ namespace ExamSystem.Data.Repository
                 .Include(q=>q.Questions)
                 .FirstOrDefaultAsync();
         }
+        public async Task<IEnumerable<Teacher>> GetTeachersBySubjectIdAsync(Guid subjectId)
+        {
+            return await _dbSet.Where(s => s.SubjectId == subjectId)
+                .Include(s => s.Subject)
+                .Include(s => s.User)
+                .Include(s => s.Exams)
+                .Include(s => s.Groups)
+                .ToListAsync();
+        }
 
     }
 }

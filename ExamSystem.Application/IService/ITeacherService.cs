@@ -14,6 +14,7 @@ namespace ExamSystem.Application.IService
         Task<ShowTeacherDto> GetTeacherByIdAsync(Guid id);
         Task DeleteTeacherAsync(Guid id);
         Task UpdateTeacherAsync(Guid id, UpdateTeacherDto dto);
+        Task<IEnumerable<ShowTeacherDto>> GetTeachersBySubjectIdAsync(Guid subjectId);
 
     }
 }

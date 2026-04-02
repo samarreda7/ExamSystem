@@ -166,5 +166,30 @@ namespace ExamSystem.Application.Service
             await _unitofwork.SaveChangesAsync();
 
         }
+        public async Task<IEnumerable<ShowTeacherDto>> GetTeachersBySubjectIdAsync(Guid subjectId)
+        {
+            bool isSubjectExist = await _unitofwork.Subjects.IsSubjectExistAsync(subjectId);
+            if (!isSubjectExist)
+            {
+                throw new KeyNotFoundException($"There is no subject with Id: {subjectId}");
+            }
+            var teachers = await _unitofwork.Teachers.GetTeachersBySubjectIdAsync(subjectId);
+            if (!teachers.Any())
+            {
+                throw new KeyNotFoundException($"There are no teachers for this subject Id: {subjectId}");
+            }
+            return teachers.Select(t => new ShowTeacherDto
+            {
+                Id = t.UserId,
+                FirstName = t.User.FirstName,
+                LastName = t.User.LastName,
+                PhoneNumber = t.User.PhoneNumber,
+                Email = t.User.Email,
+                Username = t.User.Username,
+                SubjectName = t.Subject.Name,
+                GroupsCount = t.Groups.Count,
+                ExamsCount = t.Exams.Count,
+            });
+        }
     }
 }
