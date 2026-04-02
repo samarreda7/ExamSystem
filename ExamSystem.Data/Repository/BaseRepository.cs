@@ -28,13 +28,14 @@ namespace ExamSystem.Data.Repository
         {
             return await _dbSet.FindAsync(id);
         }
-        public async Task DeleteAsync(Guid id)
+        
+        public  Task DeleteAsync(T entity)
         {
-            var entity = await GetByIdAsync(id);
             if (entity != null)
             {
                 _dbSet.Remove(entity);
             }
+            return Task.CompletedTask;
         }
         public Task UpdateAsync(T entity)
         {
