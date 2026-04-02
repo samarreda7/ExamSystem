@@ -16,7 +16,6 @@ namespace ExamSystem.Application.DTO
         public required String Username { get; set; }
         public required String Password { get; set; }
         public required String PhoneNumber { get; set; }
-        public required Guid GroupId { get; set; }
 
     }
 }
