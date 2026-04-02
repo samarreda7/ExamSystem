@@ -16,6 +16,9 @@ namespace ExamSystem.Data.Repository
 
 
 
-
+        public async Task<bool> IsSubjectExistAsync(Guid subjectId)
+        {
+            return await _dbSet.FirstOrDefaultAsync(x => x.Id == subjectId) != null;
+        }
     }
 }
