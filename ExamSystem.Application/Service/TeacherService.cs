@@ -79,5 +79,25 @@ namespace ExamSystem.Application.Service
                 ExamsCount = t.Exams.Count,
             });
         }
+        public async Task<ShowTeacherDto> GetTeacherByIdAsync(Guid id)
+        {
+            var teacher = await _unitofwork.Teachers.GetTeacherDetailsById(id);
+            if (teacher == null)
+            {
+                throw new KeyNotFoundException($"There is no teacher with this {id}");
+            }
+            return new ShowTeacherDto
+            {
+                Id = teacher.UserId,
+                FirstName = teacher.User.FirstName,
+                LastName = teacher.User.LastName,
+                PhoneNumber = teacher.User.PhoneNumber,
+                Email = teacher.User.Email,
+                Username = teacher.User.Username,
+                SubjectName = teacher.Subject.Name,
+                GroupsCount = teacher.Groups.Count,
+                ExamsCount = teacher.Exams.Count,
+            };
+        }
     }
 }
