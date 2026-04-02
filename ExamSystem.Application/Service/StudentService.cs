@@ -105,7 +105,7 @@ namespace ExamSystem.Application.Service
             {
                 throw new ArgumentNullException(nameof(dto), "Update data cannot be null.");
             }
-            bool isEmailExist = await _unitofwork.Users.IsEmailExistForAnotherUser(dto.Email,id);
+            bool isEmailExist = await _unitofwork.Users.IsEmailExistForAnotherUser(dto.Email, id);
             if (isEmailExist)
             {
                 throw new InvalidOperationException("Email is already exist");
@@ -130,6 +130,19 @@ namespace ExamSystem.Application.Service
             student.User.UpdatedAt = DateTime.UtcNow;
 
             await _unitofwork.Students.UpdateAsync(student);
+            await _unitofwork.SaveChangesAsync();
+        }
+        public async Task DeleteStudentAsync(Guid id)
+        {
+            var student = await _unitofwork.Students.GetByIdAsync(id);
+            var user = await _unitofwork.Users.GetByIdAsync(id);
+
+            if (student == null)
+            {
+                throw new KeyNotFoundException($"There is no student with this {id}");
+            }
+            await _unitofwork.Students.DeleteAsync(student);
+            await _unitofwork.Users.DeleteAsync(user);
             await _unitofwork.SaveChangesAsync();
         }
     }
