@@ -22,13 +22,14 @@ namespace ExamSystem.Data.Repository
                 .Include(g => g.Groups)
                 .ToListAsync();
         }
-        public async Task<Teacher?> GetTeacherDetailsById(Guid Id)
+        public async Task<Teacher?> GetTeacherDetailsById(Guid id)
         {
-            return await _dbSet.Where(s => s.UserId == Id)
+            return await _dbSet.Where(s => s.UserId == id)
                 .Include(s => s.User)
                 .Include(s => s.Subject)
                 .Include(s => s.Exams)
                 .Include(s => s.Groups)
+                .Include(q=>q.Questions)
                 .FirstOrDefaultAsync();
         }
 
