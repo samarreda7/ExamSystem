@@ -142,7 +142,7 @@ namespace ExamSystem.Application.Service
                 throw new KeyNotFoundException($"There is no student with this {id}");
             }
             await _unitofwork.Students.DeleteAsync(student);
-            await _unitofwork.Users.DeleteAsync(user);
+            await _unitofwork.Users.DeleteAsync(student.User);
             await _unitofwork.SaveChangesAsync();
         }
         public async Task<IEnumerable<ShowStudentDto>> GetStudentsByGroupIdAsync(Guid groupId)
