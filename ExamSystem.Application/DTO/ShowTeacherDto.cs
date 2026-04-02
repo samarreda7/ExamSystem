@@ -15,5 +15,7 @@ namespace ExamSystem.Application.DTO
         public String Username { get; set; }
         public String PhoneNumber { get; set; }
         public string SubjectName { get; set; }
+        public int GroupsCount { get; set; }
+        public int ExamsCount { get; set; }
     }
 }
