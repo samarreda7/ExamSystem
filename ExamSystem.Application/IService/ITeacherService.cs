@@ -13,6 +13,7 @@ namespace ExamSystem.Application.IService
         Task<IEnumerable<ShowTeacherDto>> GetTeachersWithAllDetailsAsync();
         Task<ShowTeacherDto> GetTeacherByIdAsync(Guid id);
         Task DeleteTeacherAsync(Guid id);
+        Task UpdateTeacherAsync(Guid id, UpdateTeacherDto dto);
 
     }
 }
