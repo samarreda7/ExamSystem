@@ -14,7 +14,12 @@ namespace ExamSystem.Data.Repository
     {
         public TeacherRepository(AppDBContext context) : base(context) { }
 
-
+        public async Task<IEnumerable<Teacher>> GetAllWithDetailsAsync()
+        {
+            return await _dbSet.Include(s => s.User)
+                .Include(s => s.Subject)
+                .ToListAsync();
+        }
 
     }
 }

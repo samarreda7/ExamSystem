@@ -9,6 +9,6 @@ namespace ExamSystem.Domain.IRepository
 {
     public interface ITeacherRepository : IBaseRepository<Teacher>
     {
-
+        Task<IEnumerable<Teacher>> GetAllWithDetailsAsync();
     }
 }
