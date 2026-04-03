@@ -1,11 +1,8 @@
-﻿using ExamSystem.Application.IService;
+﻿using ExamSystem.Application.DTO;
+using ExamSystem.Application.IService;
 using ExamSystem.Domain.IRepository;
 using ExamSystem.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace ExamSystem.Application.Service
 {
@@ -47,9 +44,36 @@ namespace ExamSystem.Application.Service
                 GroupId = groupId,
                 StudentId = studentId,
             };
-            
+
             await _unitofwork.StudentGroup.AddAsync(studentGroup);
             await _unitofwork.SaveChangesAsync();
+        }
+        public async Task<IEnumerable<ShowStudentDto>> GetStudentsByGroupIdAsync(Guid groupId, Guid teacherId)
+        {
+            var group = await _unitofwork.Groups.GetByIdAsync(groupId);
+            if (group == null)
+            {
+                throw new KeyNotFoundException($"there is no group with this id {groupId}");
+            }
+            var teacher = await _unitofwork.Teachers.GetByIdAsync(teacherId);
+            if (teacher == null)
+            {
+                throw new KeyNotFoundException($"there is no teacher with this Id {teacherId}");
+            }
+            if (group.TeacherUserId != teacherId)
+            {
+                throw new UnauthorizedAccessException("This teacher is not assigned to the target group.");
+            }
+            var students = await _unitofwork.StudentGroup.GetStudentsByGroupIdAsync(groupId);
+            return students.Select(s => new ShowStudentDto
+            {
+                Id = s.Student.UserId,
+                FirstName = s.Student.User.FirstName,
+                LastName = s.Student.User.LastName,
+                PhoneNumber = s.Student.User.PhoneNumber,
+                Email = s.Student.User.Email,
+                Username = s.Student.User.Username,
+            });
         }
     }
 }

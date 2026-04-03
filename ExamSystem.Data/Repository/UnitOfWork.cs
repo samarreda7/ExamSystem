@@ -40,7 +40,7 @@ namespace ExamSystem.Data.Repository
             StudentGroup = new StudentGroupRepository(context);
 
         }
-     
+
         public async Task<int> SaveChangesAsync() =>
                    await _Context.SaveChangesAsync();
 

@@ -14,5 +14,12 @@ namespace ExamSystem.Data.Repository
         {
             return _dbSet.AnyAsync(s=>s.StudentId == StudentId && s.GroupId == GroupId);
         }
+        public async Task<IEnumerable<StudentGroup>> GetStudentsByGroupIdAsync(Guid GroupId) 
+        {
+        return await _dbSet.Where(s=>s.GroupId == GroupId)
+                .Include(s=>s.Student)
+                .Include(s=>s.Student.User)
+                .ToListAsync();
+        }
     }
 }
