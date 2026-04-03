@@ -18,6 +18,7 @@ namespace ExamSystem.Data.Repository
         public IQuestionOptionRepository QuestionOptions { get; }
         public IExamQuestionRepository ExamQuestions { get; }
         public IExamGroupRepository ExamGroups { get; }
+        public IStudentGroupRepository StudentGroup { get; }
 
 
 
@@ -36,6 +37,7 @@ namespace ExamSystem.Data.Repository
             QuestionOptions = new QuestionOptionRepository(context);
             ExamQuestions = new ExamQuestionRepository(context);
             ExamGroups = new ExamGroupRepository(context);
+            StudentGroup = new StudentGroupRepository(context);
 
         }
      

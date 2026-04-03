@@ -14,7 +14,7 @@ public interface IUnitOfWork : IDisposable
     IQuestionOptionRepository QuestionOptions { get; }
     IExamQuestionRepository ExamQuestions { get; }
     IExamGroupRepository ExamGroups { get; }
-
+    IStudentGroupRepository StudentGroup {  get; }
 
 
 
