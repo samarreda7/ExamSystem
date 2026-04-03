@@ -76,7 +76,7 @@ namespace ExamSystem.Application.Service
             });
         }
 
-        public async Task ReassignStudentToAnotherGroupAsync(Guid groupId, Guid studentId, Guid NewGroupId , Guid teacherId)
+        public async Task ReassignStudentToAnotherGroupAsync(Guid groupId, Guid studentId, Guid NewGroupId, Guid teacherId)
         {
             var student = await _unitofwork.Students.GetByIdAsync(studentId);
             if (student == null)
@@ -121,6 +121,40 @@ namespace ExamSystem.Application.Service
             };
             await _unitofwork.StudentGroup.DeleteAsync(studentgroup);
             await _unitofwork.StudentGroup.AddAsync(NewStudentGroup);
+            await _unitofwork.SaveChangesAsync();
+        }
+        public async Task DeleteStudentAssignToGroupAsync(Guid studentId ,Guid groupId ,Guid teacherId)
+        {
+            var student = await _unitofwork.Students.GetByIdAsync(studentId);
+            if (student == null)
+            {
+                throw new KeyNotFoundException($"there is no student with this id {studentId}");
+            }
+            var group = await _unitofwork.Groups.GetByIdAsync(groupId);
+            if (group == null)
+            {
+                throw new KeyNotFoundException($"there is no group with this id {groupId}");
+            }
+            bool IsStudentAssigned = await _unitofwork.StudentGroup.IsStudentAssignedToThisGroupAsync(studentId, groupId);
+            if (!IsStudentAssigned)
+            {
+                throw new InvalidOperationException($"There is no student with Id {studentId} assigned to group with Id {groupId}");
+            }
+            var teacher = await _unitofwork.Teachers.GetByIdAsync(teacherId);
+            if (teacher == null)
+            {
+                throw new KeyNotFoundException($"there is no teacher with this Id {teacherId}");
+            }
+            if (group.TeacherUserId != teacherId)
+            {
+                throw new UnauthorizedAccessException("This teacher is not assigned to the target group.");
+            }
+            var studentgroup = await _unitofwork.StudentGroup.GetStudentGroupAssign(studentId, groupId);
+            if (studentgroup == null)
+            {
+                throw new InvalidOperationException("there is no assign with these Ids");
+            }
+            await _unitofwork.StudentGroup.DeleteAsync(studentgroup);
             await _unitofwork.SaveChangesAsync();
         }
     }

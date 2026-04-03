@@ -12,5 +12,6 @@ namespace ExamSystem.Application.IService
         Task AssignStudentToGroupAsync(Guid studentId, Guid groupId, Guid teacherId);
         Task<IEnumerable<ShowStudentDto>> GetStudentsByGroupIdAsync(Guid groupId, Guid teacherId);
         Task ReassignStudentToAnotherGroupAsync(Guid groupId, Guid studentId, Guid NewGroupId, Guid teacherId);
+        Task DeleteStudentAssignToGroupAsync(Guid studentId, Guid groupId, Guid teacherId);
     }
 }
