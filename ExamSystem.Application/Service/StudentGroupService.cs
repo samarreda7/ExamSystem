@@ -75,5 +75,53 @@ namespace ExamSystem.Application.Service
                 Username = s.Student.User.Username,
             });
         }
+
+        public async Task ReassignStudentToAnotherGroupAsync(Guid groupId, Guid studentId, Guid NewGroupId , Guid teacherId)
+        {
+            var student = await _unitofwork.Students.GetByIdAsync(studentId);
+            if (student == null)
+            {
+                throw new KeyNotFoundException($"there is no student with this id {studentId}");
+            }
+            var Newgroup = await _unitofwork.Groups.GetByIdAsync(NewGroupId);
+            if (Newgroup == null)
+            {
+                throw new KeyNotFoundException($"there is no group with this id {NewGroupId}");
+            }
+            var OldGroup = await _unitofwork.Groups.GetByIdAsync(groupId);
+            if (OldGroup == null)
+            {
+                throw new KeyNotFoundException($"there is no group with this id {groupId}");
+            }
+            var studentgroup = await _unitofwork.StudentGroup.GetStudentGroupAssign(studentId, groupId);
+            if (studentgroup == null)
+            {
+                throw new InvalidOperationException("there is no assign with these Ids");
+            }
+
+            bool Isassignedbefore = await _unitofwork.StudentGroup.IsStudentAssignedToThisGroupAsync(studentId, NewGroupId);
+            if (Isassignedbefore)
+            {
+                throw new InvalidOperationException("this student is assigned to this group before");
+            }
+            var teacher = await _unitofwork.Teachers.GetByIdAsync(teacherId);
+            if (teacher == null)
+            {
+                throw new KeyNotFoundException($"there is no teacher with this Id {teacherId}");
+            }
+
+            if (Newgroup.TeacherUserId != teacherId || OldGroup.TeacherUserId != teacherId)
+            {
+                throw new UnauthorizedAccessException("This teacher is not assigned to the target group.");
+            }
+            var NewStudentGroup = new StudentGroup
+            {
+                StudentId = studentId,
+                GroupId = NewGroupId,
+            };
+            await _unitofwork.StudentGroup.DeleteAsync(studentgroup);
+            await _unitofwork.StudentGroup.AddAsync(NewStudentGroup);
+            await _unitofwork.SaveChangesAsync();
+        }
     }
 }
