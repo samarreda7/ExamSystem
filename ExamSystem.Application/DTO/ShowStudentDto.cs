@@ -14,6 +14,5 @@ namespace ExamSystem.Application.DTO
         public String Email { get; set; }
         public String Username { get; set; }
         public String PhoneNumber { get; set; }
-        public String? GroupName { get; set; }
     }
 }

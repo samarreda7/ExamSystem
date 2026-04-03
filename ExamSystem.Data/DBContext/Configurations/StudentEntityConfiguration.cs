@@ -21,14 +21,6 @@ namespace ExamSystem.Data.DBContext.Configurations
                 .WithOne(s => s.Student)
                 .HasForeignKey<Student>(u => u.UserId);
 
-            builder.Property(g => g.GroupId)
-                   .IsRequired(false);
-
-            builder.HasOne(g=>g.Group)
-                .WithMany(t=>t.Students)
-                .HasForeignKey(g=>g.GroupId)
-                .HasForeignKey(g => g.GroupId)
-                .IsRequired(false);
 
         }
     }

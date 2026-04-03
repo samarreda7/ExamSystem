@@ -20,6 +20,8 @@ namespace ExamSystem.Data.DBContext
         public DbSet<Group> groups { get; set; }
         public DbSet<Question> questions { get; set; }
         public DbSet<QuestionOption> question_options { get; set; }
+        public DbSet<StudentGroup> student_group { get; set; }
+
 
 
 

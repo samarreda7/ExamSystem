@@ -16,7 +16,7 @@ namespace ExamSystem.Domain.Models
         public Teacher Teacher { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-        public List<Student> Students { get; set; }
-        public List<ExamGroup> ExamGroups  { get; set; }
+        public List<StudentGroup> StudentGroups { get; set; }
+        public List<ExamGroup> ExamGroups { get; set; }
     }
 }
