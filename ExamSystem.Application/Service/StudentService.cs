@@ -66,7 +66,7 @@ namespace ExamSystem.Application.Service
                 PhoneNumber = s.User.PhoneNumber,
                 Email = s.User.Email,
                 Username = s.User.Username,
-                GroupName = s.Group?.Name ?? "Unassigned",
+               
             });
         }
 
@@ -85,7 +85,7 @@ namespace ExamSystem.Application.Service
                 PhoneNumber = student.User.PhoneNumber,
                 Email = student.User.Email,
                 Username = student.User.Username,
-                GroupName = student.Group?.Name ?? "Unassigned",
+                
             };
         }
 
@@ -133,49 +133,7 @@ namespace ExamSystem.Application.Service
             await _unitofwork.Users.DeleteAsync(student.User);
             await _unitofwork.SaveChangesAsync();
         }
-        public async Task<IEnumerable<ShowStudentDto>> GetStudentsByGroupIdAsync(Guid groupId)
-        {
-            bool isGroupExist = await _unitofwork.Groups.IsGroupExistAsync(groupId);
-            if (!isGroupExist)
-            {
-                throw new KeyNotFoundException($"There is no group with Id: {groupId}");
-            }
-            var students = await _unitofwork.Students.GetStudentsByGroupIdAsync(groupId);
-              return students.Select(s => new ShowStudentDto
-              {
-                  Id = s.UserId,
-                  FirstName = s.User.FirstName,
-                  LastName = s.User.LastName,
-                  PhoneNumber = s.User.PhoneNumber,
-                  Email = s.User.Email,
-                  Username = s.User.Username,
-                  GroupName = s.Group?.Name ?? "Unassigned",
-              });
-        }
-        public async Task AssignStudentToGroupAsync(Guid studentId ,Guid groupId,Guid teacherId)
-        {
-            var student = await _unitofwork.Students.GetByIdAsync(studentId);
-            if (student == null)
-            {
-                throw new KeyNotFoundException($"there is no student with this id {studentId}");
-            }
-            var group = await _unitofwork.Groups.GetByIdAsync(groupId);
-            if (group == null)
-            {
-                throw new KeyNotFoundException($"there is no group with this id {groupId}");
-            }
-            var teacher = await _unitofwork.Teachers.GetByIdAsync(teacherId);
-            if(teacher == null)
-            {
-                throw new KeyNotFoundException($"there is no teacher with this Id {teacherId}");
-            }
-            if (group.TeacherUserId != teacherId)
-            {
-                throw new UnauthorizedAccessException("This teacher is not assigned to the target group.");
-            }
-            student.GroupId = groupId;
-            await _unitofwork.SaveChangesAsync();
-        }
+
 
     }
 
