@@ -33,6 +33,11 @@ namespace ExamSystem.Application.Service
             {
                 throw new InvalidOperationException("Username is already exist");
             }
+            var StudentRole = await _unitofwork.Roles.GetRoleName(RoleName.Student.ToString());
+            if (StudentRole == null)
+            {
+                throw new KeyNotFoundException("Student role not found in database");
+            }
             var newuser = new User
             {
                 FirstName = user.FirstName,
@@ -42,7 +47,8 @@ namespace ExamSystem.Application.Service
                 Email = user.Email,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
-                Type = UserType.Student,
+                RoleId = StudentRole.Id,
+               
             };
             newuser.PasswordHash = passwordHasher.HashPassword(newuser, user.Password);
             var student = new Student

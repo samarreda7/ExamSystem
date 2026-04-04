@@ -37,6 +37,11 @@ namespace ExamSystem.Application.Service
             {
                 throw new KeyNotFoundException($"There is no subject with Id: {teacherDto.SubjectId}");
             }
+            var TeacherRole = await _unitofwork.Roles.GetRoleName(RoleName.Teacher.ToString());
+            if (TeacherRole == null)
+            { 
+                throw new KeyNotFoundException("Teacher role not found in database");
+            }
             var newuser = new User
             {
                 FirstName = teacherDto.FirstName,
@@ -46,7 +51,7 @@ namespace ExamSystem.Application.Service
                 Email = teacherDto.Email,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
-                Type = UserType.Teacher,
+                RoleId = TeacherRole.Id,
             };
             newuser.PasswordHash = passwordHasher.HashPassword(newuser, teacherDto.Password);
             var teacher = new Teacher

@@ -39,21 +39,25 @@ namespace ExamSystem.Data.DBContext.Configurations
                    .IsUnicode();
 
             builder.Property(u => u.PhoneNumber)
-            .IsRequired()
-            .HasMaxLength(20);
-
-            builder.Property(u => u.Type)
                    .IsRequired()
-                   .HasConversion<int>();
+                   .HasMaxLength(20);
 
             builder.Property(u => u.CreatedAt)
                    .IsRequired()
                    .HasDefaultValueSql("GETDATE()");
 
             builder.Property(u => u.UpdatedAt)
-                .IsRequired()
-                .HasDefaultValueSql("GETDATE()")
-                .ValueGeneratedOnAddOrUpdate();
+                  .IsRequired()
+                  .HasDefaultValueSql("GETDATE()")
+                  .ValueGeneratedOnAddOrUpdate();
+
+            builder.Property(u => u.RoleId)
+                   .IsRequired();
+            builder.HasOne(u => u.Role)
+                   .WithMany(r => r.Users)
+                   .HasForeignKey(u => u.RoleId);
+
+
 
         }
     }

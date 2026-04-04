@@ -21,7 +21,7 @@ namespace ExamSystem.Data.DBContext
         public DbSet<Question> questions { get; set; }
         public DbSet<QuestionOption> question_options { get; set; }
         public DbSet<StudentGroup> student_group { get; set; }
-
+        public DbSet<Role> roles { get; set; }
 
 
 

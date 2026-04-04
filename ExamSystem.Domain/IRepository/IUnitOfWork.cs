@@ -15,6 +15,7 @@ public interface IUnitOfWork : IDisposable
     IExamQuestionRepository ExamQuestions { get; }
     IExamGroupRepository ExamGroups { get; }
     IStudentGroupRepository StudentGroup {  get; }
+    IRoleRepository Roles { get; }
 
 
 

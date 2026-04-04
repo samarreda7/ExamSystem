@@ -16,11 +16,12 @@ namespace ExamSystem.Domain.Models
         public String Username { get; set; }
         public String PasswordHash { get; set; }
         public String PhoneNumber { get; set; }
-        public UserType Type { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public Teacher Teacher { get; set; }
         public Student Student { get; set; }
+        public Role Role { get; set; }
+        public Guid RoleId { get; set; }
 
     }
 }

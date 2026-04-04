@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace ExamSystem.Domain.ValueTypes
 {
-    public enum UserType
+    public enum RoleName
     {
-        Student,
-        Teacher
+        Admin,
+        Teacher,
+        Student
+
     }
 }
