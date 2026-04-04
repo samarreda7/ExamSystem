@@ -32,5 +32,9 @@ namespace ExamSystem.Data.Repository
         {
             return await _dbSet.AnyAsync(u => u.Username == username && u.Id != excludeUserId);
         }
+        public async Task<User> GetByEmailAsync(string email)
+        {
+            return await _dbSet.Where(s => s.Email == email).FirstOrDefaultAsync();
+        }
     }
 }
