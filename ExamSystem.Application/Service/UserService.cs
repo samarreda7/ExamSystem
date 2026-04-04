@@ -5,6 +5,7 @@ using ExamSystem.Domain.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -35,7 +36,8 @@ namespace ExamSystem.Application.Service
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Sub, user.Username),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(ClaimTypes.Role, role.Name.ToString())
+                new Claim(ClaimTypes.Role, role.Name.ToString()),
+                new Claim("uid", user.Id.ToString())
             };
             var jwtKey = _configuration["Jwt:Key"];
             if (string.IsNullOrWhiteSpace(jwtKey))
@@ -86,13 +88,19 @@ namespace ExamSystem.Application.Service
             {
                 throw new UnauthorizedAccessException("Invalid email or password");
             }
-
+            var role = await _unitofwork.Roles.GetByIdAsync(user.RoleId);
+            if (role == null)
+            {
+                throw new KeyNotFoundException("Role not found");
+            }
             var token = await CreateTokenAsync(user);
           
             return new AuthResponseDto
             {
                 Token = new JwtSecurityTokenHandler().WriteToken(token),
-                Expires = token.ValidTo
+                Expires = token.ValidTo,
+                 Role = role.Name,   
+                UserId = user.Id
             };
         }
         
