@@ -13,7 +13,7 @@ namespace ExamSystem.Domain.IRepository
         Task<bool> IsEmailExist(string email);
         Task<bool> IsEmailExistForAnotherUser(string email, Guid excludeUserId);
         Task<bool> IsUsernameExistForAnotherUser(string username, Guid excludeUserId);
-        Task<User> GetByEmailAsync(string email);
+        Task<User?> GetByEmailAsync(string email);
 
 
     }
