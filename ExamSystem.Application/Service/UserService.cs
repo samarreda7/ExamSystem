@@ -37,18 +37,36 @@ namespace ExamSystem.Application.Service
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim(ClaimTypes.Role, role.Name.ToString())
             };
-
-            var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var jwtKey = _configuration["Jwt:Key"];
+            if (string.IsNullOrWhiteSpace(jwtKey))
+            {
+                throw new InvalidOperationException("JWT key is missing.");
+            }
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
 
             var signingCredentials = new SigningCredentials(
                                     key, SecurityAlgorithms.HmacSha256);
+            var jwtIssuer = _configuration["Jwt:Issuer"];
+            if (string.IsNullOrWhiteSpace(jwtIssuer))
+            {
+                throw new InvalidOperationException("JWT issuer is missing.");
+            }
 
+            var jwtAudience = _configuration["Jwt:Audience"];
+            if (string.IsNullOrWhiteSpace(jwtAudience)) 
+            { 
+                throw new InvalidOperationException("JWT audience is missing.");
+            }
+            var jwtDurationValue = _configuration["Jwt:DurationInMinutes"];
+            if (!double.TryParse(jwtDurationValue, out var jwtDurationMinutes))
+            {
+                throw new InvalidOperationException("JWT duration is invalid.");
+            }
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(double.Parse(_configuration["Jwt:DurationInMinutes"])),
+                expires: DateTime.UtcNow.AddMinutes(jwtDurationMinutes),
                 signingCredentials: signingCredentials
             );
             return token;
@@ -70,6 +88,7 @@ namespace ExamSystem.Application.Service
             }
 
             var token = await CreateTokenAsync(user);
+          
             return new AuthResponseDto
             {
                 Token = new JwtSecurityTokenHandler().WriteToken(token),
