@@ -60,6 +60,8 @@ builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<ITeacherService,TeacherService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ISubjectService, SubjectService>();
+builder.Services.AddScoped<IGroupService, GroupService>();
+
 
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
