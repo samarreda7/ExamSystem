@@ -50,5 +50,18 @@ namespace ExamSystem.API.Controllers
             return Ok(teachers);
             
         }
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetTeacherByIdAsync(Guid id)
+        {
+            try
+            {
+                var teacher = await _teacherService.GetTeacherByIdAsync(id);
+                return Ok(teacher);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
     }
 }
