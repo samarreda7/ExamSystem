@@ -12,5 +12,6 @@ namespace ExamSystem.Domain.IRepository
         Task<IEnumerable<Teacher>> GetAllWithDetailsAsync();
         Task<Teacher?> GetTeacherDetailsById(Guid id);
         Task<IEnumerable<Teacher>> GetTeachersBySubjectIdAsync(Guid subjectId);
+        Task<bool> IsTeacherExistAsync(Guid userId);
     }
 }

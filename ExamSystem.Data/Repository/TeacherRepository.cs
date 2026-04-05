@@ -41,6 +41,10 @@ namespace ExamSystem.Data.Repository
                 .Include(s => s.Groups)
                 .ToListAsync();
         }
+        public async Task<bool> IsTeacherExistAsync(Guid userId)
+        {
+            return await _dbSet.FirstOrDefaultAsync(x => x.UserId == userId) != null;
+        }
 
     }
 }
