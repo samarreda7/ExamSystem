@@ -2,11 +2,7 @@
 using ExamSystem.Domain.IRepository;
 using ExamSystem.Domain.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace ExamSystem.Data.Repository
 {
@@ -16,9 +12,13 @@ namespace ExamSystem.Data.Repository
 
 
 
-        public async Task<bool> IsSubjectExistAsync(Guid subjectId)
+        public async Task<bool> IsSubjectExistAsync(Guid Id)
         {
-            return await _dbSet.FirstOrDefaultAsync(x => x.Id == subjectId) != null;
+            return await _dbSet.AnyAsync(x => x.Id == Id);
+        }
+        public async Task<bool> IsSubjectNameExistAsync(string subjectName)
+        {
+            return await _dbSet.AnyAsync(x => x.Name == subjectName) ;
         }
     }
 }

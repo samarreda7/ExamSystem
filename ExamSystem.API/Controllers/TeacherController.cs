@@ -23,7 +23,7 @@ namespace ExamSystem.API.Controllers
             try
             {
                 await _teacherService.AddTeacherAsync(teacherDto);
-                return CreatedAtAction(string.Empty, "Teacher added successfully");
+                return Ok("Teacher added successfully");
             }
             catch (ArgumentNullException ex)
             {

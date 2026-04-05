@@ -9,6 +9,8 @@ namespace ExamSystem.Domain.IRepository
 {
     public interface ISubjectRepository : IBaseRepository<Subject>
     {
-        Task<bool> IsSubjectExistAsync(Guid subjectId);
+        Task<bool> IsSubjectExistAsync(Guid Id);
+        Task<bool> IsSubjectNameExistAsync(string subjectName);
+
     }
 }
