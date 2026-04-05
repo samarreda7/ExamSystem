@@ -37,5 +37,17 @@ namespace ExamSystem.Application.Service
             await _unitofwork.Subjects.AddAsync(subject);
             await _unitofwork.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<ShowSubjectsDto>> GetAllSubjectsAsync()
+        {
+            var subjects = await _unitofwork.Subjects.GetAllAsync();
+            return  subjects.Select(s => new ShowSubjectsDto
+            {
+                Id = s.Id,
+                Name =s.Name
+
+            });
+           
+        }
     }
 }

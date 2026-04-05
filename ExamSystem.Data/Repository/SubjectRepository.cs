@@ -20,5 +20,6 @@ namespace ExamSystem.Data.Repository
         {
             return await _dbSet.AnyAsync(x => x.Name == subjectName) ;
         }
+     
     }
 }

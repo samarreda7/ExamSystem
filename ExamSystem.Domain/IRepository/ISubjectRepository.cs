@@ -11,6 +11,7 @@ namespace ExamSystem.Domain.IRepository
     {
         Task<bool> IsSubjectExistAsync(Guid Id);
         Task<bool> IsSubjectNameExistAsync(string subjectName);
+        
 
     }
 }

@@ -34,5 +34,12 @@ namespace ExamSystem.API.Controllers
                 return Conflict(ex.Message);
             }
         }
+        [HttpGet] 
+        public async Task<IActionResult> GetAllSubjectAsync()
+        {
+            var subjects = await _subjectService.GetAllSubjectsAsync();
+        
+            return Ok(subjects);
+        }
     }
 }
