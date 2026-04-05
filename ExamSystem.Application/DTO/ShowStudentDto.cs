@@ -8,11 +8,11 @@ namespace ExamSystem.Application.DTO
 {
     public class ShowStudentDto
     {
-        public Guid Id { get; set; }
+        public required Guid Id { get; set; }
         public String FirstName { get; set; }
         public String LastName { get; set; }
-        public String Email { get; set; }
-        public String Username { get; set; }
+        public required String Email { get; set; }
+        public required String Username { get; set; }
         public String PhoneNumber { get; set; }
     }
 }
