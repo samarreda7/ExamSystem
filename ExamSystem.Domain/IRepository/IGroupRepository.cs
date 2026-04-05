@@ -1,9 +1,5 @@
 ﻿using ExamSystem.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace ExamSystem.Domain.IRepository
 {
@@ -11,5 +7,7 @@ namespace ExamSystem.Domain.IRepository
     {
   
         Task<bool> IsGroupExistAsync(Guid groupId);
+        Task<bool> IsGroupNameExistAsync(string groupName);
+        Task<IEnumerable<Group>> GetAllGroupsAsync();
     }
 }
