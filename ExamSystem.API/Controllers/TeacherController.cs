@@ -37,8 +37,18 @@ namespace ExamSystem.API.Controllers
             {
                 return NotFound(ex.Message); // 404 — role not found
             }
+        }
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllTeachersAsync()
+        {
+            var teachers = await _teacherService.GetTeachersWithAllDetailsAsync();
 
-
+            if(!teachers.Any())
+            {
+                return Ok();
+            }
+            return Ok(teachers);
+            
         }
     }
 }
