@@ -1,0 +1,63 @@
+﻿using ExamSystem.Application.DTO;
+using ExamSystem.Application.IService;
+using ExamSystem.Domain.ValueTypes;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace ExamSystem.API.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class StudentGroupController : ControllerBase
+    {
+        private readonly IStudentGroupService _studentGroupService;
+        public StudentGroupController(IStudentGroupService studentGroupService)
+        {
+            _studentGroupService = studentGroupService;
+        }
+
+
+        [Authorize(Roles = nameof(RoleName.Teacher))]
+        [HttpPost("assign")]
+        public async Task<IActionResult> AssignStudentToGroupAsync([FromBody]AssignStudentToGroupDto dto)
+        {
+            var teacherIdClaim = User.FindFirst("uid")?.Value;
+            if (string.IsNullOrEmpty(teacherIdClaim) || !Guid.TryParse(teacherIdClaim, out Guid teacherId))
+            {
+                return Unauthorized("Invalid token claims.");
+            }
+            try
+            {
+                await _studentGroupService.AssignStudentToGroupAsync(dto.StudentId, dto.GroupId, teacherId);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex) { return NotFound(new { error = ex.Message }); }
+            catch (UnauthorizedAccessException ex) { return StatusCode(403, new { error = ex.Message }); }
+            catch (InvalidOperationException ex) { return Conflict(new { error = ex.Message }); }
+        }
+
+
+        [Authorize(Roles = nameof(RoleName.Teacher))]
+        [HttpPut("reassign")]
+        public async Task<IActionResult> ReassignStudentToAnotherGroupAsync([FromBody]ReassignStudentToAnotherGroupDto dto)
+        {
+            var teacherIdClaim = User.FindFirst("uid")?.Value;
+            if (string.IsNullOrEmpty(teacherIdClaim) || !Guid.TryParse(teacherIdClaim, out Guid teacherId))
+            {
+                return Unauthorized("Invalid token claims.");
+            }
+
+            try
+            {
+                await _studentGroupService.ReassignStudentToAnotherGroupAsync(dto.GroupId, dto.StudentId, dto.newGroupId, teacherId);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex) { return NotFound(new { error = ex.Message }); }
+            catch (UnauthorizedAccessException ex) { return StatusCode(403, new { error = ex.Message }); }
+            catch (InvalidOperationException ex) { return Conflict(new { error = ex.Message }); }
+
+
+
+        }
+    }
+}
