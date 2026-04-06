@@ -1,5 +1,6 @@
 ﻿using ExamSystem.Application.DTO;
 using ExamSystem.Application.IService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExamSystem.API.Controllers
@@ -14,6 +15,7 @@ namespace ExamSystem.API.Controllers
             _userService = userService;
         }
 
+        [AllowAnonymous] 
         [HttpPost("login")]
         public async Task<IActionResult> LogIn([FromBody]LoginDto user)
         {

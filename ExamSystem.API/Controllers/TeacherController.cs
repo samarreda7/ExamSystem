@@ -1,5 +1,7 @@
 ﻿using ExamSystem.Application.DTO;
 using ExamSystem.Application.IService;
+using ExamSystem.Domain.ValueTypes;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExamSystem.API.Controllers
@@ -13,6 +15,7 @@ namespace ExamSystem.API.Controllers
         {
             _teacherService = teacherService;
         }
+        [AllowAnonymous]
         [HttpPost("add")]
         public async Task<IActionResult> AddTeacher([FromBody]CreateTeacherDto teacherDto)
         {
@@ -38,18 +41,16 @@ namespace ExamSystem.API.Controllers
                 return NotFound(ex.Message); // 404 — role not found
             }
         }
+        [Authorize(Roles = nameof(RoleName.Admin))]
         [HttpGet("all")]
         public async Task<IActionResult> GetAllTeachersAsync()
         {
             var teachers = await _teacherService.GetTeachersWithAllDetailsAsync();
-
-            if(!teachers.Any())
-            {
-                return Ok();
-            }
-            return Ok(teachers);
-            
+                return Ok(teachers);
+                     
         }
+
+        [Authorize(Roles = $"{nameof(RoleName.Teacher)},{nameof(RoleName.Admin)}")]
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetTeacherByIdAsync(Guid id)
         {

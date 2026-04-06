@@ -1,5 +1,7 @@
 ﻿using ExamSystem.Application.DTO;
 using ExamSystem.Application.IService;
+using ExamSystem.Domain.ValueTypes;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExamSystem.API.Controllers
@@ -13,6 +15,7 @@ namespace ExamSystem.API.Controllers
         {
             _studentService = studentService;
         }
+        [AllowAnonymous]
         [HttpPost("add")]
         public async Task<IActionResult> AddStudent([FromBody]CreateStudentDto studentDto)
         {

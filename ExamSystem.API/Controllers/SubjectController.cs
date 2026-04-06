@@ -1,5 +1,7 @@
 ﻿using ExamSystem.Application.DTO;
 using ExamSystem.Application.IService;
+using ExamSystem.Domain.ValueTypes;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExamSystem.API.Controllers
@@ -13,6 +15,7 @@ namespace ExamSystem.API.Controllers
         {
             _subjectService = subjectService;
         }
+        [Authorize(Roles = nameof(RoleName.Admin))]
         [HttpPost("add")]
         public async Task<IActionResult> AddSubject([FromBody]CreateSubjectDto subjectDto)
         {
@@ -34,6 +37,8 @@ namespace ExamSystem.API.Controllers
                 return Conflict(ex.Message);
             }
         }
+
+        [AllowAnonymous]
         [HttpGet] 
         public async Task<IActionResult> GetAllSubjectAsync()
         {

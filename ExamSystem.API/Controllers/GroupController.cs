@@ -1,5 +1,7 @@
 ﻿using ExamSystem.Application.DTO;
 using ExamSystem.Application.IService;
+using ExamSystem.Domain.ValueTypes;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExamSystem.API.Controllers
@@ -13,6 +15,7 @@ namespace ExamSystem.API.Controllers
         {
             _groupService = groupService;
         }
+        [Authorize(Roles = $"{nameof(RoleName.Teacher)},{nameof(RoleName.Admin)}")]
         [HttpPost("add")]
         public async Task<IActionResult> AddGroup([FromBody] CreateGroupDto grouptDto)
         {
@@ -38,6 +41,7 @@ namespace ExamSystem.API.Controllers
                 return NotFound(ex.Message);          
             }
         }
+        [Authorize(Roles =nameof(RoleName.Admin))]
         [HttpGet("all")]
         public async Task<IActionResult> GetAllGroupsAsync()
         {
