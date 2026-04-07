@@ -47,7 +47,7 @@ namespace ExamSystem.API.Controllers
             try
             {
                 await _studentGroupService.AssignStudentToGroupAsync(dto.StudentId, dto.GroupId, teacherId);
-                return NoContent();
+                return Ok("Student assigned successfully");
             }
             catch (KeyNotFoundException ex) { return NotFound(new { error = ex.Message }); }
             catch (UnauthorizedAccessException ex) { return StatusCode(403, new { error = ex.Message }); }
@@ -68,7 +68,7 @@ namespace ExamSystem.API.Controllers
             try
             {
                 await _studentGroupService.ReassignStudentToAnotherGroupAsync(dto.GroupId, dto.StudentId, dto.newGroupId, teacherId);
-                return NoContent();
+                return Ok("Student Reassigned successfully");
             }
             catch (KeyNotFoundException ex) { return NotFound(new { error = ex.Message }); }
             catch (UnauthorizedAccessException ex) { return StatusCode(403, new { error = ex.Message }); }
@@ -88,7 +88,7 @@ namespace ExamSystem.API.Controllers
             try
             {
                 await _studentGroupService.DeleteStudentAssignToGroupAsync(studentId, groupId, teacherId);
-                return NoContent();
+                return Ok("Student assignment deleted successfully");
             }
             catch (KeyNotFoundException ex) { return NotFound(new { error = ex.Message }); }
             catch (UnauthorizedAccessException ex) { return StatusCode(403, new { error = ex.Message }); }
