@@ -41,6 +41,8 @@ namespace ExamSystem.API.Controllers
                 return NotFound(ex.Message); // 404 — role not found
             }
         }
+
+
         [Authorize(Roles = nameof(RoleName.Admin))]
         [HttpGet("all")]
         public async Task<IActionResult> GetAllTeachersAsync()
@@ -58,6 +60,75 @@ namespace ExamSystem.API.Controllers
             {
                 var teacher = await _teacherService.GetTeacherByIdAsync(id);
                 return Ok(teacher);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+        [Authorize(Roles = nameof(RoleName.Teacher))]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteTeacherAsync()
+        {
+            var teacherIdClaim = User.FindFirst("uid")?.Value;
+            if (string.IsNullOrEmpty(teacherIdClaim) || !Guid.TryParse(teacherIdClaim, out Guid teacherId))
+            {
+                return Unauthorized("Invalid token claims.");
+            }
+            try
+            {
+                await _teacherService.DeleteTeacherAsync(teacherId);
+                return Ok("Teacher Deleted");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ex.Message);
+            }
+        }
+        [Authorize(Roles = nameof(RoleName.Teacher))]
+        [HttpPut]
+        public async Task<IActionResult> UpdateTeacherAsync([FromBody]UpdateTeacherDto dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var teacherIdClaim = User.FindFirst("uid")?.Value;
+            if (string.IsNullOrEmpty(teacherIdClaim) || !Guid.TryParse(teacherIdClaim, out Guid teacherId))
+            {
+                return Unauthorized("Invalid token claims.");
+            }
+            try
+            {
+                await _teacherService.UpdateTeacherAsync(teacherId,dto);
+                return Ok("Teacher Updated Successfully");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ex.Message);
+            }
+        }
+
+        [Authorize(Roles = nameof(RoleName.Admin))]
+        [HttpGet("subject/{subjectId:guid}")]
+        public async Task<IActionResult> GetTeachersBySubjectIdAsync([FromRoute]Guid subjectId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+               var teachers= await _teacherService.GetTeachersBySubjectIdAsync(subjectId);
+                return Ok(teachers);
             }
             catch (KeyNotFoundException ex)
             {
