@@ -9,6 +9,7 @@ namespace ExamSystem.Domain.Models
     public class Exam
     {
         public Guid Id { get; set; }
+        public string Name { get; set; }
         public Guid TeacherUserId { get; set; }
         public Teacher Teacher { get; set; }
         public DateTime CreatedAt { get; set; }
