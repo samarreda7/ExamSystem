@@ -66,6 +66,19 @@ builder.Services.AddScoped<IStudentGroupService, StudentGroupService>();
 
 
 
+var jwtKey = builder.Configuration["Jwt:Key"]
+             ?? throw new InvalidOperationException(
+                 "JWT signing key 'Jwt:Key' is not configured. " +
+                 "Please set it in appsettings.json or environment variables.");
+
+var jwtIssuer = builder.Configuration["Jwt:Issuer"]
+                ?? throw new InvalidOperationException(
+                    "JWT issuer 'Jwt:Issuer' is not configured.");
+
+var jwtAudience = builder.Configuration["Jwt:Audience"]
+                  ?? throw new InvalidOperationException(
+                      "JWT audience 'Jwt:Audience' is not configured.");
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -75,10 +88,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
+            ValidIssuer = jwtIssuer,
+            ValidAudience = jwtAudience,
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                Encoding.UTF8.GetBytes(jwtKey))
         };
     });
 
