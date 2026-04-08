@@ -1,9 +1,4 @@
 ﻿using ExamSystem.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ExamSystem.Domain.IRepository
 {
@@ -15,6 +10,6 @@ namespace ExamSystem.Domain.IRepository
         Task<bool> IsUsernameExistForAnotherUser(string username, Guid excludeUserId);
         Task<User?> GetByEmailAsync(string email);
 
-
+ 
     }
 }
