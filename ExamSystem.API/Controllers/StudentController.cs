@@ -1,5 +1,6 @@
 ﻿using ExamSystem.Application.DTO;
 using ExamSystem.Application.IService;
+using ExamSystem.Application.Service;
 using ExamSystem.Domain.ValueTypes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -41,7 +42,81 @@ namespace ExamSystem.API.Controllers
                 return NotFound(ex.Message); // 404 — role not found
             }
 
+        }
 
+        [Authorize(Roles = $"{nameof(RoleName.Teacher)},{nameof(RoleName.Admin)}")]
+        [HttpGet("all")]
+        public async Task<IActionResult> GetStudentsWithAllDetailsAsync()
+        {
+            var students = await _studentService.GetStudentsWithAllDetailsAsync();
+            return Ok(students);
+
+        }
+
+        [Authorize(Roles = $"{nameof(RoleName.Teacher)},{nameof(RoleName.Admin)}")]
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetStudentByIdAsync(Guid id)
+        {
+            try
+            {
+                var student = await _studentService.GetStudentByIdAsync(id);
+                return Ok(student);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+        [Authorize(Roles = nameof(RoleName.Student))]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteStudentAsync()
+        {
+            var studentIdClaim = User.FindFirst("uid")?.Value;
+            if (string.IsNullOrEmpty(studentIdClaim) || !Guid.TryParse(studentIdClaim, out Guid studentId))
+            {
+                return Unauthorized("Invalid token claims.");
+            }
+            try
+            {
+                await _studentService.DeleteStudentAsync(studentId);
+                return Ok("student Deleted");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ex.Message);
+            }
+        }
+
+        [Authorize(Roles = nameof(RoleName.Student))]
+        [HttpPut]
+        public async Task<IActionResult> UpdateStudentAsync([FromBody] UpdateStudentDto dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var studentIdClaim = User.FindFirst("uid")?.Value;
+            if (string.IsNullOrEmpty(studentIdClaim) || !Guid.TryParse(studentIdClaim, out Guid studentId))
+            {
+                return Unauthorized("Invalid token claims.");
+            }
+            try
+            {
+                await _studentService.UpdateStudentAsync(studentId, dto);
+                return Ok("student Updated Successfully");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ex.Message);
+            }
         }
     }
 }
