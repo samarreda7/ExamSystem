@@ -52,8 +52,8 @@ namespace ExamSystem.Application.Service
 
         public async Task<IEnumerable<ShowGroupDto>> GetAllGroupsAsync()
         {
-            var subjects = await _unitofwork.Groups.GetAllGroupsAsync();
-            return subjects.Select(s => new ShowGroupDto
+            var groups = await _unitofwork.Groups.GetAllGroupsAsync();
+            return groups.Select(s => new ShowGroupDto
             {
                 Id = s.Id,
                 Name = s.Name,
