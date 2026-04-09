@@ -42,7 +42,6 @@ namespace ExamSystem.API.Controllers
             {
                 return BadRequest(new { error = ex.Message });
             }
-
         }
 
         [Authorize(Roles = nameof(RoleName.Teacher))]
@@ -62,6 +61,30 @@ namespace ExamSystem.API.Controllers
             catch (KeyNotFoundException ex) 
             {
                 return NotFound(new { error = ex.Message });
+            }
+        }
+
+        [Authorize(Roles = nameof(RoleName.Teacher))]
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> DeleteExam(Guid Id)
+        {
+            var teacherIdClaim = User.FindFirst("uid")?.Value;
+            if (string.IsNullOrEmpty(teacherIdClaim) || !Guid.TryParse(teacherIdClaim, out Guid teacherId))
+            {
+                return Unauthorized("Invalid token claims.");
+            }
+            try
+            {
+                await _examService.DeleteExamAsync(teacherId, Id);
+                return Ok("Exam delete successfully");
+            }
+            catch(KeyNotFoundException ex) 
+            {
+                    return NotFound(new { error = ex.Message });
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return StatusCode(403, new { error = ex.Message });
             }
         }
 
