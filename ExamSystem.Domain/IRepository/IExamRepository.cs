@@ -9,6 +9,6 @@ namespace ExamSystem.Domain.IRepository
 {
     public interface IExamRepository : IBaseRepository<Exam>
     {
- 
+        Task<IEnumerable<Exam>> GetAllTeacherExamAsync(Guid teacherId);
     }
 }
