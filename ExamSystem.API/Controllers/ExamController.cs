@@ -38,6 +38,10 @@ namespace ExamSystem.API.Controllers
             {
                 return NotFound(new { error = ex.Message });
             }
+            catch (InvalidDataException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
 
         }
 
