@@ -51,6 +51,21 @@ namespace ExamSystem.Application.Service
                 QuestionsCount = exam.ExamQuestions.Count,
                 GroupsCount = exam.ExamGroups.Count,
             });
-        }  
+        }
+
+        public async Task DeleteExamAsync(Guid teacherId, Guid examId)
+        {
+            var exam = await _unitofwork.Exams.GetByIdAsync(examId);
+            if(exam == null)
+            {
+                throw new KeyNotFoundException($"There i no exams with this Id {examId}");
+            }
+            if(exam.TeacherUserId != teacherId)
+            {
+                throw new UnauthorizedAccessException("this teacher is not Uthorized to delete this exam");
+            }
+            await _unitofwork.Exams.DeleteAsync(exam);
+            await _unitofwork.SaveChangesAsync();
+        }
     }
 }
