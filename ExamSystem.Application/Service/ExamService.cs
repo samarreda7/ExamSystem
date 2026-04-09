@@ -20,6 +20,10 @@ namespace ExamSystem.Application.Service
             {
                 throw new KeyNotFoundException($"there is no teacher with this Id {teacherId}");
             }
+            if (dto.Name == null) 
+            {
+                throw new InvalidDataException("Exam name is required ");
+            }
             var exam = new Exam
             {
                 Name = dto.Name,
