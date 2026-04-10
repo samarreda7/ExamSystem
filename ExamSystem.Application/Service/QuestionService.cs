@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ExamSystem.Application.IService;
+using ExamSystem.Domain.IRepository;
+
 
 namespace ExamSystem.Application.Service
 {
-    internal class QuestionService
+    public class QuestionService : IQuestionService
     {
+        private readonly IUnitOfWork _unitofwork;
+        public QuestionService(IUnitOfWork unitofwork)
+        {
+            _unitofwork = unitofwork;
+        }
     }
 }
