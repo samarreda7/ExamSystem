@@ -45,5 +45,24 @@ namespace ExamSystem.Application.Service
             await _unitofwork.Questions.AddAsync(question);
             await _unitofwork.SaveChangesAsync();
         }
+        public async Task DeleteQuestionAsync(Guid Id, Guid teacherId)
+        {
+            var teacher = await _unitofwork.Teachers.GetByIdAsync(teacherId);
+            if (teacher == null)
+            {
+                throw new KeyNotFoundException($"there is no teacher with this Id {teacherId}");
+            }
+            var question = await _unitofwork.Questions.GetByIdAsync(Id);
+            if(question == null)
+            {
+                throw new KeyNotFoundException("there is no question with this Id");
+            }
+            if(question.TeacherUserId != teacherId)
+            {
+                throw new UnauthorizedAccessException("You can only delete questions you own");
+            }
+            await _unitofwork.Questions.DeleteAsync(question);
+            await _unitofwork.SaveChangesAsync();
+        }
     }
 }
