@@ -5,7 +5,8 @@ namespace ExamSystem.Application.IService
     public interface IQuestionService
     {
         Task AddQuestionAsync(Guid teacherId, CreateQuestionDto dto);
-        Task DeleteQuestionAsync(Guid Id, Guid teacherId);
+        Task DeleteQuestionAsync(Guid questionId, Guid teacherId);
         Task<IEnumerable<ShowQuestionDto>> GetQuestionsBySubjectAsync(Guid subjectId, Guid teacherId);
     }
 }
+    
