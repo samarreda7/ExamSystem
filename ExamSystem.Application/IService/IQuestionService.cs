@@ -6,5 +6,6 @@ namespace ExamSystem.Application.IService
     {
         Task AddQuestionAsync(Guid teacherId, CreateQuestionDto dto);
         Task DeleteQuestionAsync(Guid Id, Guid teacherId);
+        Task<IEnumerable<ShowQuestionDto>> GetQuestionsBySubjectAsync(Guid subjectId, Guid teacherId);
     }
 }

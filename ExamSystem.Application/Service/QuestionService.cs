@@ -64,5 +64,33 @@ namespace ExamSystem.Application.Service
             await _unitofwork.Questions.DeleteAsync(question);
             await _unitofwork.SaveChangesAsync();
         }
+        public async Task<IEnumerable<ShowQuestionDto>> GetQuestionsBySubjectAsync(Guid subjectId,Guid teacherId)
+        {
+            bool isSubjectExist = await _unitofwork.Subjects.IsSubjectExistAsync(subjectId);
+            if (!isSubjectExist)
+            {
+                throw new KeyNotFoundException($"There is no subject with Id: {subjectId}");
+            }
+            var teacher = await _unitofwork.Teachers.GetByIdAsync(teacherId);
+            if (teacher == null)
+            {
+                throw new KeyNotFoundException($"there is no teacher with this Id {teacherId}");
+            }
+            if (teacher.SubjectId != subjectId) 
+            {
+                throw new InvalidDataException("You can only get questions for your own subject.");
+
+            }
+            var question = await _unitofwork.Questions.GetQuestionsBySubjectIdAsync(subjectId);
+            return question.Select(x => new ShowQuestionDto
+            {
+                Id = x.Id,
+                Text = x.Text,
+                Type = x.Type,
+                TeacherFirstName =x.Teacher.User.FirstName,
+                TeacherLastName=x.Teacher.User.LastName,
+            });
+        }
+        
     }
 }
