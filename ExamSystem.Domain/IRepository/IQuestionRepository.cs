@@ -9,6 +9,6 @@ namespace ExamSystem.Domain.IRepository
 {
     public interface IQuestionRepository : IBaseRepository<Question>
     {
-
+        Task<IEnumerable<Question>> GetQuestionsBySubjectIdAsync(Guid subjectId);
     }
 }

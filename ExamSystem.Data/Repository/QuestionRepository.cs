@@ -14,7 +14,13 @@ namespace ExamSystem.Data.Repository
     {
         public QuestionRepository(AppDBContext context) : base(context) { }
 
-
+        public async Task<IEnumerable<Question>> GetQuestionsBySubjectIdAsync(Guid subjectId)
+        {
+            return await _dbSet.Where(q => q.SubjectId == subjectId)
+                               .Include(t=>t.Teacher)
+                               .ThenInclude(t=>t.User)
+                               .ToListAsync();
+        }
 
 
     }
