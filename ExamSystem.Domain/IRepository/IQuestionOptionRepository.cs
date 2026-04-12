@@ -11,5 +11,6 @@ namespace ExamSystem.Domain.IRepository
     {
         Task<int> CountByQuestionIdAsync(Guid questionId);
         Task<bool> HasCorrectOptionAsync(Guid questionId);
+        Task<bool> HasOtherCorrectOptionAsync(Guid questionId, Guid optionId);
     }
 }

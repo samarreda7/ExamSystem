@@ -22,5 +22,13 @@ namespace ExamSystem.Data.Repository
         {
             return await _dbSet.AnyAsync(qo => qo.QuestionId == questionId && qo.IsCorrect);
         }
+
+        public async Task<bool> HasOtherCorrectOptionAsync(Guid questionId, Guid optionId)
+        {
+            return await _dbSet.AnyAsync(qo =>
+                qo.QuestionId == questionId &&
+                qo.Id != optionId &&
+                qo.IsCorrect);
+        }
     }
 }
