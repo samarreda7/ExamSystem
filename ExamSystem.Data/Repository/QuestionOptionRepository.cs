@@ -13,9 +13,14 @@ namespace ExamSystem.Data.Repository
     public class QuestionOptionRepository : BaseRepository<QuestionOption>, IQuestionOptionRepository
     {
         public QuestionOptionRepository(AppDBContext context) : base(context) { }
+        public async Task<int> CountByQuestionIdAsync(Guid questionId)
+        {
+            return await _dbSet.CountAsync(qo => qo.QuestionId == questionId);
+        }
 
-
-
-
+        public async Task<bool> HasCorrectOptionAsync(Guid questionId)
+        {
+            return await _dbSet.AnyAsync(qo => qo.QuestionId == questionId && qo.IsCorrect);
+        }
     }
 }

@@ -9,6 +9,7 @@ namespace ExamSystem.Domain.IRepository
 {
     public interface IQuestionOptionRepository : IBaseRepository<QuestionOption>
     {
- 
+        Task<int> CountByQuestionIdAsync(Guid questionId);
+        Task<bool> HasCorrectOptionAsync(Guid questionId);
     }
 }
