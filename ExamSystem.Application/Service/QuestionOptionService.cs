@@ -72,5 +72,57 @@ namespace ExamSystem.Application.Service
             await _unitofwork.QuestionOptions.AddAsync(option);
             await _unitofwork.SaveChangesAsync();
         }
+
+        public async Task UpdateOptionAsync(Guid optionId, Guid teacherId, UpdateQuestionOptionDto dto)
+        {
+            if (dto == null)
+            {
+                throw new ArgumentNullException(nameof(dto));
+            }
+
+            if (string.IsNullOrWhiteSpace(dto.Text))
+            {
+                throw new InvalidDataException("Option text can not be empty.");
+            }
+
+            var option = await _unitofwork.QuestionOptions.GetByIdAsync(optionId);
+            if (option == null)
+            {
+                throw new KeyNotFoundException($"There is no option with Id: {optionId}");
+            }
+
+            var question = await _unitofwork.Questions.GetByIdAsync(option.QuestionId);
+            if (question == null)
+            {
+                throw new KeyNotFoundException($"There is no question with Id: {option.QuestionId}");
+            }
+
+            var teacher = await _unitofwork.Teachers.GetByIdAsync(teacherId);
+            if (teacher == null)
+            {
+                throw new KeyNotFoundException($"there is no teacher with this Id {teacherId}");
+            }
+
+            if (question.TeacherUserId != teacherId)
+            {
+                throw new UnauthorizedAccessException("You can only update options for your own questions.");
+            }
+
+            if (dto.IsCorrect)
+            {
+                var hasOtherCorrectOption = await _unitofwork.QuestionOptions
+                    .HasOtherCorrectOptionAsync(question.Id, optionId);
+                if (hasOtherCorrectOption)
+                {
+                    throw new InvalidOperationException("This question already has a correct option.");
+                }
+            }
+
+            option.Text = dto.Text;
+            option.IsCorrect = dto.IsCorrect;
+
+            await _unitofwork.QuestionOptions.UpdateAsync(option);
+            await _unitofwork.SaveChangesAsync();
+        }
     }
 }
