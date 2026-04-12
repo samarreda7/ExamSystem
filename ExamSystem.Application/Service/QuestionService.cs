@@ -2,6 +2,7 @@
 using ExamSystem.Application.IService;
 using ExamSystem.Domain.IRepository;
 using ExamSystem.Domain.Models;
+using ExamSystem.Domain.ValueTypes;
 
 
 namespace ExamSystem.Application.Service
@@ -63,6 +64,11 @@ namespace ExamSystem.Application.Service
             }
             await _unitofwork.Questions.DeleteAsync(question);
             await _unitofwork.SaveChangesAsync();
+        }
+        public Task<IEnumerable<string>> GetQuestionTypesAsync()
+        {
+            IEnumerable<string> questionTypes = Enum.GetNames<QuestionType>();
+            return Task.FromResult(questionTypes);
         }
         public async Task<ShowQuestionDto> GetQuestionByIdAsync(Guid questionId, Guid teacherId)
         {
