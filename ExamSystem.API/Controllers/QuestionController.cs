@@ -98,6 +98,29 @@ namespace ExamSystem.API.Controllers
             }
         }
         [Authorize(Roles = nameof(RoleName.Teacher))]
+        [HttpGet("{questionId:guid}")]
+        public async Task<IActionResult> GetQuestionByIdAsync(Guid questionId)
+        {
+            var teacherIdClaim = User.FindFirst("uid")?.Value;
+            if (string.IsNullOrEmpty(teacherIdClaim) || !Guid.TryParse(teacherIdClaim, out Guid teacherId))
+            {
+                return Unauthorized("Invalid token claims.");
+            }
+            try
+            {
+                var question = await _questionService.GetQuestionByIdAsync(questionId, teacherId);
+                return Ok(question);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+            catch (InvalidDataException ex)
+            {
+                return StatusCode(403, new { error = ex.Message });
+            }
+        }
+        [Authorize(Roles = nameof(RoleName.Teacher))]
         [HttpPut("{questionId:guid}")]
         public async Task<IActionResult> UpdateQuestionAsync([FromRoute] Guid questionId, [FromBody] UpdateQuestionDto dto)
         {
