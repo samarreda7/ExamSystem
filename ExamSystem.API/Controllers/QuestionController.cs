@@ -75,7 +75,7 @@ namespace ExamSystem.API.Controllers
             }
         }
         [Authorize(Roles = nameof(RoleName.Teacher))]
-        [HttpGet("{subjectId:guid}")]
+        [HttpGet("subject/{subjectId:guid}")]
         public async Task<IActionResult> GetQuestionsBySubjectAsync(Guid subjectId)
         {
             var teacherIdClaim = User.FindFirst("uid")?.Value;
