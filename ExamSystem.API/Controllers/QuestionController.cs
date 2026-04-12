@@ -1,5 +1,4 @@
-﻿
-using ExamSystem.Application.DTO;
+﻿using ExamSystem.Application.DTO;
 using ExamSystem.Application.IService;
 using ExamSystem.Domain.ValueTypes;
 using Microsoft.AspNetCore.Authorization;
@@ -65,6 +64,29 @@ namespace ExamSystem.API.Controllers
             catch (ArgumentNullException ex)
             {
                 return BadRequest(new { error = ex.Message });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return StatusCode(403, new { error = ex.Message });
+            }
+        }
+        [Authorize(Roles = nameof(RoleName.Teacher))]
+        [HttpGet("{subjectId:guid}")]
+        public async Task<IActionResult> GetQuestionsBySubjectAsync(Guid subjectId)
+        {
+            var teacherIdClaim = User.FindFirst("uid")?.Value;
+            if (string.IsNullOrEmpty(teacherIdClaim) || !Guid.TryParse(teacherIdClaim, out Guid teacherId))
+            {
+                return Unauthorized("Invalid token claims.");
+            }
+            try
+            {
+                var questions = await _questionService.GetQuestionsBySubjectAsync(subjectId, teacherId);
+                return Ok(questions);
             }
             catch (KeyNotFoundException ex)
             {
