@@ -15,9 +15,9 @@ namespace ExamSystem.Application.Service
         }
         public async Task AddQuestionAsync(Guid teacherId, CreateQuestionDto dto)
         {
-            if (dto == null) 
+            if (dto == null)
             {
-            throw new ArgumentNullException(nameof(dto));
+                throw new ArgumentNullException(nameof(dto));
             }
             var teacher = await _unitofwork.Teachers.GetByIdAsync(teacherId);
             if (teacher == null)
@@ -76,7 +76,7 @@ namespace ExamSystem.Application.Service
             {
                 throw new KeyNotFoundException($"there is no teacher with this Id {teacherId}");
             }
-            if (teacher.SubjectId != subjectId) 
+            if (teacher.SubjectId != subjectId)
             {
                 throw new InvalidDataException("You can only get questions for your own subject.");
 
@@ -87,10 +87,37 @@ namespace ExamSystem.Application.Service
                 Id = x.Id,
                 Text = x.Text,
                 Type = x.Type,
-                TeacherFirstName =x.Teacher.User.FirstName,
-                TeacherLastName=x.Teacher.User.LastName,
+                TeacherFirstName = x.Teacher.User.FirstName,
+                TeacherLastName = x.Teacher.User.LastName,
             });
         }
-        
+        public async Task UpdateQuestionAsync(Guid questionId, Guid teacherId, UpdateQuestionDto dto)
+        {
+            var teacher = await _unitofwork.Teachers.GetByIdAsync(teacherId);
+            if (teacher == null)
+            {
+                throw new KeyNotFoundException($"there is no teacher with this Id {teacherId}");
+            }
+            var question = await _unitofwork.Questions.GetByIdAsync(questionId);
+            if (question == null)
+            {
+                throw new KeyNotFoundException("there is no question with this Id");
+            }
+            if (question.TeacherUserId != teacherId)
+            {
+                throw new UnauthorizedAccessException("You can only update questions you own");
+            }
+            if(dto == null)
+            {
+                throw new ArgumentNullException(nameof(dto));
+            }
+            if (dto.Text == null) 
+            {
+                throw new InvalidDataException("Question text can not be null");
+            }
+            question.Text = dto.Text;
+            await _unitofwork.Questions.UpdateAsync(question);
+            await _unitofwork.SaveChangesAsync();
+        }
     }
 }
