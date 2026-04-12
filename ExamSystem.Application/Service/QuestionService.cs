@@ -64,6 +64,38 @@ namespace ExamSystem.Application.Service
             await _unitofwork.Questions.DeleteAsync(question);
             await _unitofwork.SaveChangesAsync();
         }
+        public async Task<ShowQuestionDto> GetQuestionByIdAsync(Guid questionId, Guid teacherId)
+        {
+            var question = await _unitofwork.Questions.GetByIdAsync(questionId);
+            if (question == null)
+            {
+                throw new KeyNotFoundException("there is no question with this Id");
+            }
+
+            var teacher = await _unitofwork.Teachers.GetByIdAsync(teacherId);
+            if (teacher == null)
+            {
+                throw new KeyNotFoundException($"there is no teacher with this Id {teacherId}");
+            }
+
+            if (teacher.SubjectId != question.SubjectId)
+            {
+                throw new InvalidDataException("You can only get questions for your own subject.");
+            }
+
+            var questionTeacher = await _unitofwork.Teachers.GetByIdAsync(question.TeacherUserId);
+            var teacherFirstName = questionTeacher?.User?.FirstName ?? string.Empty;
+            var teacherLastName = questionTeacher?.User?.LastName ?? string.Empty;
+
+            return new ShowQuestionDto
+            {
+                Id = question.Id,
+                Text = question.Text,
+                Type = question.Type,
+                TeacherFirstName = teacherFirstName,
+                TeacherLastName = teacherLastName,
+            };
+        }
         public async Task<IEnumerable<ShowQuestionDto>> GetQuestionsBySubjectAsync(Guid subjectId,Guid teacherId)
         {
             bool isSubjectExist = await _unitofwork.Subjects.IsSubjectExistAsync(subjectId);
