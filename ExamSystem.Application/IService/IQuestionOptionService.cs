@@ -6,6 +6,7 @@ namespace ExamSystem.Application.IService
     {
         Task AssignOptionToQuestionAsync(Guid teacherId, CreateQuestionOptionDto dto);
         Task DeleteOptionAsync(Guid optionId, Guid teacherId);
+        Task<IEnumerable<ShowQuestionOptionDto>> GetOptionsByQuestionIdAsync(Guid questionId, Guid teacherId);
         Task<ShowQuestionOptionDto> GetOptionByIdAsync(Guid optionId, Guid teacherId);
         Task UpdateOptionAsync(Guid optionId, Guid teacherId, UpdateQuestionOptionDto dto);
     }

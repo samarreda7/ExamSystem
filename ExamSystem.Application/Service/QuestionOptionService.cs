@@ -102,6 +102,36 @@ namespace ExamSystem.Application.Service
             await _unitofwork.SaveChangesAsync();
         }
 
+        public async Task<IEnumerable<ShowQuestionOptionDto>> GetOptionsByQuestionIdAsync(Guid questionId, Guid teacherId)
+        {
+            var question = await _unitofwork.Questions.GetByIdAsync(questionId);
+            if (question == null)
+            {
+                throw new KeyNotFoundException($"There is no question with Id: {questionId}");
+            }
+
+            var teacher = await _unitofwork.Teachers.GetByIdAsync(teacherId);
+            if (teacher == null)
+            {
+                throw new KeyNotFoundException($"there is no teacher with this Id {teacherId}");
+            }
+
+            if (teacher.SubjectId != question.SubjectId)
+            {
+                throw new UnauthorizedAccessException("You can only get options for questions in your own subject.");
+            }
+
+            var options = await _unitofwork.QuestionOptions.GetByQuestionIdAsync(questionId);
+
+            return options.Select(option => new ShowQuestionOptionDto
+            {
+                Id = option.Id,
+                Text = option.Text,
+                IsCorrect = option.IsCorrect,
+                QuestionId = option.QuestionId
+            });
+        }
+
         public async Task<ShowQuestionOptionDto> GetOptionByIdAsync(Guid optionId, Guid teacherId)
         {
             var option = await _unitofwork.QuestionOptions.GetByIdAsync(optionId);
