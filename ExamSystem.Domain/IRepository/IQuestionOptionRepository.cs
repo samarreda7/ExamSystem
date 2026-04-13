@@ -10,6 +10,7 @@ namespace ExamSystem.Domain.IRepository
     public interface IQuestionOptionRepository : IBaseRepository<QuestionOption>
     {
         Task<int> CountByQuestionIdAsync(Guid questionId);
+        Task<IEnumerable<QuestionOption>> GetByQuestionIdAsync(Guid questionId);
         Task<bool> HasCorrectOptionAsync(Guid questionId);
         Task<bool> HasOtherCorrectOptionAsync(Guid questionId, Guid optionId);
     }

@@ -18,6 +18,11 @@ namespace ExamSystem.Data.Repository
             return await _dbSet.CountAsync(qo => qo.QuestionId == questionId);
         }
 
+        public async Task<IEnumerable<QuestionOption>> GetByQuestionIdAsync(Guid questionId)
+        {
+            return await _dbSet.Where(qo => qo.QuestionId == questionId).ToListAsync();
+        }
+
         public async Task<bool> HasCorrectOptionAsync(Guid questionId)
         {
             return await _dbSet.AnyAsync(qo => qo.QuestionId == questionId && qo.IsCorrect);
