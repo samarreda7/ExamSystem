@@ -73,6 +73,40 @@ namespace ExamSystem.Application.Service
             await _unitofwork.SaveChangesAsync();
         }
 
+        public async Task<ShowQuestionOptionDto> GetOptionByIdAsync(Guid optionId, Guid teacherId)
+        {
+            var option = await _unitofwork.QuestionOptions.GetByIdAsync(optionId);
+            if (option == null)
+            {
+                throw new KeyNotFoundException($"There is no option with Id: {optionId}");
+            }
+
+            var question = await _unitofwork.Questions.GetByIdAsync(option.QuestionId);
+            if (question == null)
+            {
+                throw new KeyNotFoundException($"There is no question with Id: {option.QuestionId}");
+            }
+
+            var teacher = await _unitofwork.Teachers.GetByIdAsync(teacherId);
+            if (teacher == null)
+            {
+                throw new KeyNotFoundException($"there is no teacher with this Id {teacherId}");
+            }
+
+            if (question.TeacherUserId != teacherId)
+            {
+                throw new UnauthorizedAccessException("You can only get options for your own questions.");
+            }
+
+            return new ShowQuestionOptionDto
+            {
+                Id = option.Id,
+                Text = option.Text,
+                IsCorrect = option.IsCorrect,
+                QuestionId = option.QuestionId
+            };
+        }
+
         public async Task UpdateOptionAsync(Guid optionId, Guid teacherId, UpdateQuestionOptionDto dto)
         {
             if (dto == null)
