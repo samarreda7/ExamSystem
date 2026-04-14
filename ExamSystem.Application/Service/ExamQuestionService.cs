@@ -89,6 +89,45 @@ namespace ExamSystem.Application.Service
             });
         }
 
+        public async Task<IEnumerable<ShowQuestionByExamIdDto>> GetQuestionsByExamIdForStudentAsync(Guid studentId, Guid examId)
+        {
+            var exam = await _unitofwork.Exams.GetByIdAsync(examId);
+            if (exam == null)
+            {
+                throw new KeyNotFoundException($"There is no exam with Id: {examId}");
+            }
+
+            var student = await _unitofwork.Students.GetByIdAsync(studentId);
+            if (student == null)
+            {
+                throw new KeyNotFoundException($"there is no student with this id {studentId}");
+            }
+
+            var examGroups = await _unitofwork.ExamGroups.GetByExamAsync(examId);
+            if (!examGroups.Any())
+            {
+                throw new InvalidOperationException("This exam is not assigned to any group.");
+            }
+
+            var studentGroups = await _unitofwork.StudentGroup.GetGroupsByStudentIdAsync(studentId);
+            var studentGroupIds = studentGroups.Select(sg => sg.GroupId).ToHashSet();
+
+            bool isStudentAllowedToAccessExam = examGroups.Any(eg => studentGroupIds.Contains(eg.GroupId));
+            if (!isStudentAllowedToAccessExam)
+            {
+                throw new UnauthorizedAccessException("This student is not assigned to a group that has this exam.");
+            }
+
+            var examQuestions = await _unitofwork.ExamQuestions.GetByExamAsync(examId);
+
+            return examQuestions.Select(eq => new ShowQuestionByExamIdDto
+            {
+                QuestionId = eq.Question.Id,
+                Text = eq.Question.Text,
+                Type = eq.Question.Type
+            });
+        }
+
         public async Task RemoveQuestionFromExamAsync(Guid teacherId, Guid examId, Guid questionId)
         {
             var exam = await _unitofwork.Exams.GetByIdAsync(examId);
