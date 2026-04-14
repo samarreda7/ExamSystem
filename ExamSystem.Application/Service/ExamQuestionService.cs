@@ -59,5 +59,40 @@ namespace ExamSystem.Application.Service
             await _unitofwork.ExamQuestions.AddAsync(newExamQuestion);
             await _unitofwork.SaveChangesAsync();
         }
+
+        public async Task RemoveQuestionFromExamAsync(Guid teacherId, Guid examId, Guid questionId)
+        {
+            var exam = await _unitofwork.Exams.GetByIdAsync(examId);
+            if (exam == null)
+            {
+                throw new KeyNotFoundException($"There is no exam with Id: {examId}");
+            }
+
+            var teacher = await _unitofwork.Teachers.GetByIdAsync(teacherId);
+            if (teacher == null)
+            {
+                throw new KeyNotFoundException($"there is no teacher with this Id {teacherId}");
+            }
+
+            if (exam.TeacherUserId != teacherId)
+            {
+                throw new UnauthorizedAccessException("You can only remove questions from your own exams.");
+            }
+
+            var question = await _unitofwork.Questions.GetByIdAsync(questionId);
+            if (question == null)
+            {
+                throw new KeyNotFoundException($"There is no question with Id: {questionId}");
+            }
+
+            var examQuestion = await _unitofwork.ExamQuestions.GetByIdAsync(examId, questionId);
+            if (examQuestion == null)
+            {
+                throw new InvalidOperationException("This question is not assigned to this exam.");
+            }
+
+            await _unitofwork.ExamQuestions.DeleteAsync(examQuestion);
+            await _unitofwork.SaveChangesAsync();
+        }
     }
 }
