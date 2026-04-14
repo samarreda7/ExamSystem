@@ -10,6 +10,7 @@ namespace ExamSystem.Application.IService
     public interface IStudentGroupService
     {
         Task AssignStudentToGroupAsync(Guid studentId, Guid groupId, Guid teacherId);
+        Task<IEnumerable<ShowGroupDto>> GetGroupsByStudentIdAsync(Guid studentId);
         Task<IEnumerable<ShowStudentDto>> GetStudentsByGroupIdAsync(Guid groupId, Guid teacherId);
         Task ReassignStudentToAnotherGroupAsync(Guid groupId, Guid studentId, Guid NewGroupId, Guid teacherId);
         Task DeleteStudentAssignToGroupAsync(Guid studentId, Guid groupId, Guid teacherId);

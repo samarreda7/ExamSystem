@@ -76,6 +76,25 @@ namespace ExamSystem.Application.Service
             });
         }
 
+        public async Task<IEnumerable<ShowGroupDto>> GetGroupsByStudentIdAsync(Guid studentId)
+        {
+            var student = await _unitofwork.Students.GetByIdAsync(studentId);
+            if (student == null)
+            {
+                throw new KeyNotFoundException($"there is no student with this id {studentId}");
+            }
+
+            var studentGroups = await _unitofwork.StudentGroup.GetGroupsByStudentIdAsync(studentId);
+
+            return studentGroups.Select(sg => new ShowGroupDto
+            {
+                Id = sg.Group.Id,
+                Name = sg.Group.Name,
+                SubjectName = sg.Group.Subject.Name,
+                TeacherId = sg.Group.TeacherUserId
+            });
+        }
+
         public async Task ReassignStudentToAnotherGroupAsync(Guid groupId, Guid studentId, Guid NewGroupId, Guid teacherId)
         {
             var student = await _unitofwork.Students.GetByIdAsync(studentId);
