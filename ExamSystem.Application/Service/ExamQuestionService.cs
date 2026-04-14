@@ -60,6 +60,35 @@ namespace ExamSystem.Application.Service
             await _unitofwork.SaveChangesAsync();
         }
 
+        public async Task<IEnumerable<ShowQuestionByExamIdDto>> GetQuestionsByExamIdAsync(Guid teacherId, Guid examId)
+        {
+            var exam = await _unitofwork.Exams.GetByIdAsync(examId);
+            if (exam == null)
+            {
+                throw new KeyNotFoundException($"There is no exam with Id: {examId}");
+            }
+
+            var teacher = await _unitofwork.Teachers.GetByIdAsync(teacherId);
+            if (teacher == null)
+            {
+                throw new KeyNotFoundException($"there is no teacher with this Id {teacherId}");
+            }
+
+            if (exam.TeacherUserId != teacherId)
+            {
+                throw new UnauthorizedAccessException("You can only get questions from your own exams.");
+            }
+
+            var examQuestions = await _unitofwork.ExamQuestions.GetByExamAsync(examId);
+
+            return examQuestions.Select(eq => new ShowQuestionByExamIdDto
+            {
+                QuestionId = eq.Question.Id,
+                Text = eq.Question.Text,
+                Type = eq.Question.Type
+            });
+        }
+
         public async Task RemoveQuestionFromExamAsync(Guid teacherId, Guid examId, Guid questionId)
         {
             var exam = await _unitofwork.Exams.GetByIdAsync(examId);
