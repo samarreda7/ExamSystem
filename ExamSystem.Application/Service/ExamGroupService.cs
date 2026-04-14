@@ -60,6 +60,36 @@ namespace ExamSystem.Application.Service
             await _unitofwork.SaveChangesAsync();
         }
 
+        public async Task<IEnumerable<ShowExamByGroupIdForStudentDto>> GetExamsByGroupIdAsync(Guid studentId, Guid groupId)
+        {
+            var student = await _unitofwork.Students.GetByIdAsync(studentId);
+            if (student == null)
+            {
+                throw new KeyNotFoundException($"there is no student with this id {studentId}");
+            }
+
+            var group = await _unitofwork.Groups.GetByIdAsync(groupId);
+            if (group == null)
+            {
+                throw new KeyNotFoundException($"There is no group with Id: {groupId}");
+            }
+
+            bool isStudentAssignedToGroup = await _unitofwork.StudentGroup.IsStudentAssignedToThisGroupAsync(studentId, groupId);
+            if (!isStudentAssignedToGroup)
+            {
+                throw new UnauthorizedAccessException("This student is not assigned to the target group.");
+            }
+
+            var examGroups = await _unitofwork.ExamGroups.GetByGroupAsync(groupId);
+
+            return examGroups.Select(eg => new ShowExamByGroupIdForStudentDto
+            {
+                ExamId = eg.ExamId,
+                ExamName = eg.Exam.Name,
+                SubjectName = eg.Group.Subject.Name
+            });
+        }
+
         public async Task RemoveExamFromGroupAsync(Guid teacherId, Guid examId, Guid groupId)
         {
             var exam = await _unitofwork.Exams.GetByIdAsync(examId);
