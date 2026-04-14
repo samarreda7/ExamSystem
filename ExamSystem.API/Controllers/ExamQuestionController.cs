@@ -54,5 +54,34 @@ namespace ExamSystem.API.Controllers
                 return Conflict(new { error = ex.Message });
             }
         }
+
+        [Authorize(Roles = nameof(RoleName.Teacher))]
+        [HttpDelete("{examId:guid}/questions/{questionId:guid}")]
+        public async Task<IActionResult> RemoveQuestionFromExamAsync([FromRoute] Guid examId, [FromRoute] Guid questionId)
+        {
+            var teacherIdClaim = User.FindFirst("uid")?.Value;
+            if (string.IsNullOrEmpty(teacherIdClaim) || !Guid.TryParse(teacherIdClaim, out Guid teacherId))
+            {
+                return Unauthorized("Invalid token claims.");
+            }
+
+            try
+            {
+                await _examQuestionService.RemoveQuestionFromExamAsync(teacherId, examId, questionId);
+                return Ok("Question removed from exam successfully");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return StatusCode(403, new { error = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { error = ex.Message });
+            }
+        }
     }
 }
