@@ -108,5 +108,34 @@ namespace ExamSystem.API.Controllers
                 return StatusCode(403, new { error = ex.Message });
             }
         }
+
+        [Authorize(Roles = nameof(RoleName.Student))]
+        [HttpGet("{examId:guid}/questions/student")]
+        public async Task<IActionResult> GetQuestionsByExamIdForStudentAsync([FromRoute] Guid examId)
+        {
+            var studentIdClaim = User.FindFirst("uid")?.Value;
+            if (string.IsNullOrEmpty(studentIdClaim) || !Guid.TryParse(studentIdClaim, out Guid studentId))
+            {
+                return Unauthorized("Invalid token claims.");
+            }
+
+            try
+            {
+                var questions = await _examQuestionService.GetQuestionsByExamIdForStudentAsync(studentId, examId);
+                return Ok(questions);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return StatusCode(403, new { error = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { error = ex.Message });
+            }
+        }
     }
 }
