@@ -25,8 +25,8 @@ namespace ExamSystem.API.Controllers
             }
             try
             {
-                await _groupService.AddGroupAsync(grouptDto);
-                return Ok("Group added successfully");
+                var addedGroup = await _groupService.AddGroupAsync(grouptDto);
+                return Ok(addedGroup);
             }
             catch (ArgumentNullException ex)
             {
