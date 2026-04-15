@@ -15,7 +15,7 @@ namespace ExamSystem.API.Controllers
         {
             _groupService = groupService;
         }
-        [Authorize(Roles = $"{nameof(RoleName.Teacher)},{nameof(RoleName.Admin)}")]
+        [Authorize(Roles = nameof(RoleName.Teacher))]
         [HttpPost("add")]
         public async Task<IActionResult> AddGroup([FromBody] CreateGroupDto grouptDto)
         {
@@ -23,9 +23,14 @@ namespace ExamSystem.API.Controllers
             {
                 return BadRequest(ModelState);
             }
+            var teacherIdClaim = User.FindFirst("uid")?.Value;
+            if (string.IsNullOrEmpty(teacherIdClaim) || !Guid.TryParse(teacherIdClaim, out Guid teacherId))
+            {
+                return Unauthorized("Invalid token claims.");
+            }
             try
             {
-                var addedGroup = await _groupService.AddGroupAsync(grouptDto);
+                var addedGroup = await _groupService.AddGroupAsync(teacherId, grouptDto);
                 return Ok(addedGroup);
             }
             catch (ArgumentNullException ex)
