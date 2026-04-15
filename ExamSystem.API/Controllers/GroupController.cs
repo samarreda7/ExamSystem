@@ -49,5 +49,26 @@ namespace ExamSystem.API.Controllers
 
             return Ok(groups);
         }
+
+        [Authorize(Roles = nameof(RoleName.Teacher))]
+        [HttpGet("teacher/all")]
+        public async Task<IActionResult> GetTeacherGroupsAsync()
+        {
+            var teacherIdClaim = User.FindFirst("uid")?.Value;
+            if (string.IsNullOrEmpty(teacherIdClaim) || !Guid.TryParse(teacherIdClaim, out Guid teacherId))
+            {
+                return Unauthorized("Invalid token claims.");
+            }
+
+            try
+            {
+                var groups = await _groupService.GetTeacherGroupsAsync(teacherId);
+                return Ok(groups);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+        }
     }
 }
