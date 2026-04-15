@@ -11,5 +11,6 @@ namespace ExamSystem.Application.IService
     {
         Task<ShowGroupDto> AddGroupAsync(CreateGroupDto groupDto);
         Task<IEnumerable<ShowGroupDto>> GetAllGroupsAsync();
+        Task<IEnumerable<ShowGroupDto>> GetTeacherGroupsAsync(Guid teacherId);
     }
 }
