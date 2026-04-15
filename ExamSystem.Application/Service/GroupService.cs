@@ -17,7 +17,7 @@ namespace ExamSystem.Application.Service
         {
             _unitofwork = unitOfWork;
         }
-        public async Task AddGroupAsync(CreateGroupDto groupDto)
+        public async Task<ShowGroupDto> AddGroupAsync(CreateGroupDto groupDto)
         {
             if (groupDto == null)
             {
@@ -48,6 +48,16 @@ namespace ExamSystem.Application.Service
 
             await _unitofwork.Groups.AddAsync(group);
             await _unitofwork.SaveChangesAsync();
+
+            var subject = await _unitofwork.Subjects.GetByIdAsync(group.SubjectId);
+
+            return new ShowGroupDto
+            {
+                Id = group.Id,
+                Name = group.Name,
+                TeacherId = group.TeacherUserId,
+                SubjectName = subject?.Name ?? string.Empty
+            };
         }
 
         public async Task<IEnumerable<ShowGroupDto>> GetAllGroupsAsync()
