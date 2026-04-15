@@ -10,7 +10,6 @@ namespace ExamSystem.Application.DTO
     {
         public string Name { get; set; }
         public Guid SubjectId { get; set; }
-        public Guid TeacherId { get; set; }
 
     }
 }
