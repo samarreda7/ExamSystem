@@ -27,5 +27,13 @@ namespace ExamSystem.Data.Repository
                                .ToListAsync();
              
         }
+
+        public async Task<IEnumerable<Group>> GetGroupsByTeacherIdAsync(Guid teacherId)
+        {
+            return await _dbSet.Include(g => g.Subject)
+                               .Include(g => g.Teacher)
+                               .Where(g => g.TeacherUserId == teacherId)
+                               .ToListAsync();
+        }
     }
 }
