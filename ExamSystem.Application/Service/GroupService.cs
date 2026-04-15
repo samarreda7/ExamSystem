@@ -17,7 +17,7 @@ namespace ExamSystem.Application.Service
         {
             _unitofwork = unitOfWork;
         }
-        public async Task<ShowGroupDto> AddGroupAsync(CreateGroupDto groupDto)
+        public async Task<ShowGroupDto> AddGroupAsync(Guid teacherId, CreateGroupDto groupDto)
         {
             if (groupDto == null)
             {
@@ -28,10 +28,10 @@ namespace ExamSystem.Application.Service
             {
                 throw new InvalidDataException("A Group with this name already exists.");
             }
-            bool isTeacherExist = await _unitofwork.Teachers.IsTeacherExistAsync(groupDto.TeacherId);
+            bool isTeacherExist = await _unitofwork.Teachers.IsTeacherExistAsync(teacherId);
             if (!isTeacherExist)
             {
-                throw new KeyNotFoundException($"No teacher found with Id: {groupDto.TeacherId}");
+                throw new KeyNotFoundException($"No teacher found with Id: {teacherId}");
             }
 
             bool isSubjectExist = await _unitofwork.Subjects.IsSubjectExistAsync(groupDto.SubjectId);
@@ -42,7 +42,7 @@ namespace ExamSystem.Application.Service
             var group = new Group
             {
                 Name = groupDto.Name,
-                TeacherUserId=groupDto.TeacherId,
+                TeacherUserId=teacherId,
                 SubjectId= groupDto.SubjectId,
             };
 

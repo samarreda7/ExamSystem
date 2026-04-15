@@ -9,7 +9,7 @@ namespace ExamSystem.Application.IService
 {
     public interface IGroupService
     {
-        Task<ShowGroupDto> AddGroupAsync(CreateGroupDto groupDto);
+        Task<ShowGroupDto> AddGroupAsync(Guid teacherId, CreateGroupDto groupDto);
         Task<IEnumerable<ShowGroupDto>> GetAllGroupsAsync();
         Task<IEnumerable<ShowGroupDto>> GetTeacherGroupsAsync(Guid teacherId);
     }
