@@ -1,4 +1,4 @@
-﻿using ExamSystem.Application.DTO;
+using ExamSystem.Application.DTO;
 using ExamSystem.Application.IService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -32,6 +32,28 @@ namespace ExamSystem.API.Controllers
             catch (UnauthorizedAccessException ex)
             {
                 return Unauthorized(ex.Message);
+            }
+        }
+
+
+        [AllowAnonymous]
+        [HttpPost("init")]
+        public async Task<IActionResult> Init([FromBody] InitAdminDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            try
+            {
+                await _userService.InitializeAdminAsync(dto);
+                return StatusCode(201, new { message = "Admin created. You can now log in." });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return StatusCode(423, ex.Message); 
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
         }
     }
