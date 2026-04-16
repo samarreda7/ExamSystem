@@ -85,6 +85,31 @@ namespace ExamSystem.API.Controllers
         }
 
         [Authorize(Roles = nameof(RoleName.Teacher))]
+        [HttpGet("question/{questionId:guid}")]
+        public async Task<IActionResult> GetOptionsByQuestionIdAsync([FromRoute] Guid questionId)
+        {
+            var teacherIdClaim = User.FindFirst("uid")?.Value;
+            if (string.IsNullOrEmpty(teacherIdClaim) || !Guid.TryParse(teacherIdClaim, out Guid teacherId))
+            {
+                return Unauthorized("Invalid token claims.");
+            }
+
+            try
+            {
+                var options = await _questionOptionService.GetOptionsByQuestionIdAsync(questionId, teacherId);
+                return Ok(options);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return StatusCode(403, new { error = ex.Message });
+            }
+        }
+
+        [Authorize(Roles = nameof(RoleName.Teacher))]
         [HttpDelete("{optionId:guid}")]
         public async Task<IActionResult> DeleteOptionAsync([FromRoute] Guid optionId)
         {
