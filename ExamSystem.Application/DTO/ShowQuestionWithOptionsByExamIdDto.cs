@@ -7,6 +7,6 @@ namespace ExamSystem.Application.DTO
         public Guid QuestionId { get; set; }
         public required string Text { get; set; }
         public QuestionType Type { get; set; }
-        public IEnumerable<ShowQuestionOptionDto> Options { get; set; } = Enumerable.Empty<ShowQuestionOptionDto>();
+        public IEnumerable<ShowQuestionOptionForStudentDto> Options { get; set; } = Enumerable.Empty<ShowQuestionOptionForStudentDto>();
     }
 }
