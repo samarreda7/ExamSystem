@@ -89,7 +89,7 @@ namespace ExamSystem.Application.Service
             });
         }
 
-        public async Task<IEnumerable<ShowQuestionByExamIdDto>> GetQuestionsByExamIdForStudentAsync(Guid studentId, Guid examId)
+        public async Task<IEnumerable<ShowQuestionWithOptionsByExamIdDto>> GetQuestionsByExamIdForStudentAsync(Guid studentId, Guid examId)
         {
             var exam = await _unitofwork.Exams.GetByIdAsync(examId);
             if (exam == null)
@@ -120,11 +120,18 @@ namespace ExamSystem.Application.Service
 
             var examQuestions = await _unitofwork.ExamQuestions.GetByExamAsync(examId);
 
-            return examQuestions.Select(eq => new ShowQuestionByExamIdDto
+            return examQuestions.Select(eq => new ShowQuestionWithOptionsByExamIdDto
             {
                 QuestionId = eq.Question.Id,
                 Text = eq.Question.Text,
-                Type = eq.Question.Type
+                Type = eq.Question.Type,
+                Options = eq.Question.Options.Select(option => new ShowQuestionOptionDto
+                {
+                    Id = option.Id,
+                    Text = option.Text,
+                    IsCorrect = option.IsCorrect,
+                    QuestionId = option.QuestionId
+                })
             });
         }
 
