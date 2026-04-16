@@ -125,11 +125,10 @@ namespace ExamSystem.Application.Service
                 QuestionId = eq.Question.Id,
                 Text = eq.Question.Text,
                 Type = eq.Question.Type,
-                Options = eq.Question.Options.Select(option => new ShowQuestionOptionDto
+                Options = eq.Question.Options.Select(option => new ShowQuestionOptionForStudentDto
                 {
                     Id = option.Id,
                     Text = option.Text,
-                    IsCorrect = option.IsCorrect,
                     QuestionId = option.QuestionId
                 })
             });
