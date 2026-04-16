@@ -18,6 +18,7 @@ namespace ExamSystem.Data.Repository
         {
             return await _dbSet.Where(e => e.ExamId == examId)
                 .Include(e => e.Question)
+                .ThenInclude(q => q.Options)
                 .ToListAsync();
         }
         public async Task<IEnumerable<ExamQuestion>> GetByQuestionAsync(Guid questionId)
