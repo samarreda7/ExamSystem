@@ -2,6 +2,7 @@
 using ExamSystem.Application.IService;
 using ExamSystem.Domain.IRepository;
 using ExamSystem.Domain.Models;
+using ExamSystem.Domain.ValueTypes;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -103,8 +104,50 @@ namespace ExamSystem.Application.Service
                 UserId = user.Id
             };
         }
-        
 
+
+        public async Task<bool> IsAdminExistsAsync()
+        {
+            var adminRole = await _unitofwork.Roles.GetRoleName(RoleName.Admin.ToString());
+
+            if (adminRole == null) return false;
+
+           
+            var users = await _unitofwork.Users.GetAllAsync();
+            return users.Any(u => u.RoleId == adminRole.Id);
+        }
+
+   
+        public async Task InitializeAdminAsync(InitAdminDto dto)
+        {
+            
+            var adminRole = await _unitofwork.Roles
+                                .GetRoleName(RoleName.Admin.ToString());
+            if (adminRole == null)
+                throw new KeyNotFoundException("Admin role not found.");
+
+            var users = await _unitofwork.Users.GetAllAsync();
+            bool adminExists = users.Any(u => u.RoleId == adminRole.Id);
+            if (adminExists)
+                throw new InvalidOperationException("Setup already completed.");
+
+            var passwordHasher = new PasswordHasher<User>();
+            var adminUser = new User
+            {
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
+                Username = dto.Username,
+                Email = dto.Email,
+                PhoneNumber = dto.PhoneNumber,
+                RoleId = adminRole.Id,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+            };
+            adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, dto.Password);
+
+            await _unitofwork.Users.AddAsync(adminUser);
+            await _unitofwork.SaveChangesAsync();
+        }
     }
 
 }

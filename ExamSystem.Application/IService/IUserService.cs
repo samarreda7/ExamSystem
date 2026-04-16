@@ -10,5 +10,8 @@ namespace ExamSystem.Application.IService
     public interface IUserService
     {
         Task<AuthResponseDto> LoginAsync(LoginDto dto);
+        Task<bool> IsAdminExistsAsync();
+        Task InitializeAdminAsync(InitAdminDto dto);
+
     }
 }
