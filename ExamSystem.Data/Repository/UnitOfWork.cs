@@ -20,6 +20,8 @@ namespace ExamSystem.Data.Repository
         public IExamGroupRepository ExamGroups { get; }
         public IStudentGroupRepository StudentGroup { get; }
         public IRoleRepository Roles { get; }
+        public IStudentExamAnswerRepository StudentExamAnswers { get; }
+        public IStudentExamResultRepository StudentExamResults { get; }
 
 
 
@@ -40,6 +42,8 @@ namespace ExamSystem.Data.Repository
             ExamGroups = new ExamGroupRepository(context);
             StudentGroup = new StudentGroupRepository(context);
             Roles = new RoleRepository(context);
+            StudentExamAnswers = new StudentExamAnswerRepository(context);
+            StudentExamResults = new StudentExamResultRepository(context);
 
         }
 
