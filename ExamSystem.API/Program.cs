@@ -67,6 +67,8 @@ builder.Services.AddScoped<IExamGroupService, ExamGroupService>();
 builder.Services.AddScoped<IExamQuestionService, ExamQuestionService>();
 builder.Services.AddScoped<IQuestionService, QuestionService>();
 builder.Services.AddScoped<IQuestionOptionService, QuestionOptionService>();
+builder.Services.AddScoped<IStudentExamAnswerService, StudentExamAnswerService>();
+builder.Services.AddScoped<IStudentExamResultService, StudentExamResultService>();
 
 
 
