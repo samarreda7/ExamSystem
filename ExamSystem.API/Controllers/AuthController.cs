@@ -15,9 +15,9 @@ namespace ExamSystem.API.Controllers
             _userService = userService;
         }
 
-        [AllowAnonymous] 
+        [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<IActionResult> LogIn([FromBody]LoginDto user)
+        public async Task<IActionResult> LogIn([FromBody] LoginDto user)
         {
             if (!ModelState.IsValid)
             {
@@ -26,12 +26,20 @@ namespace ExamSystem.API.Controllers
 
             try
             {
-               var token = await _userService.LoginAsync(user);
+                var token = await _userService.LoginAsync(user);
                 return Ok(token);
             }
             catch (UnauthorizedAccessException ex)
             {
                 return Unauthorized(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return StatusCode(500, "Login is currently unavailable due to a server configuration error.");
             }
         }
 
@@ -49,7 +57,7 @@ namespace ExamSystem.API.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                return StatusCode(423, ex.Message); 
+                return StatusCode(423, ex.Message);
             }
             catch (KeyNotFoundException ex)
             {
