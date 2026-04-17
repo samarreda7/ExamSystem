@@ -92,6 +92,11 @@ namespace ExamSystem.API.Controllers
             {
                 return NotFound(new { error = ex.Message });
             }
+            catch (InvalidDataException ex)
+            {
+                return StatusCode(403, new { error = ex.Message });
+            }
+
             catch (UnauthorizedAccessException ex)
             {
                 return StatusCode(403, new { error = ex.Message });
