@@ -57,7 +57,7 @@ builder.Services.AddDbContext<AppDBContext>(options =>
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IStudentService, StudentService>();
-builder.Services.AddScoped<ITeacherService,TeacherService>();
+builder.Services.AddScoped<ITeacherService, TeacherService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ISubjectService, SubjectService>();
 builder.Services.AddScoped<IGroupService, GroupService>();
@@ -100,16 +100,18 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())    
+if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-if (!app.Environment.IsDevelopment())       
+if (!app.Environment.IsDevelopment())
 {
     app.UseHttpsRedirection();
 }
