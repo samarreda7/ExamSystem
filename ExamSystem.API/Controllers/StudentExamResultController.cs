@@ -10,11 +10,11 @@ namespace ExamSystem.API.Controllers
     [ApiController]
     public class StudentExamResultController : ControllerBase
     {
-        private readonly IStudentExamResultService _studentExamResultService;
+        private readonly IStudentExamSubmissionService _studentExamSubmissionService;
 
-        public StudentExamResultController(IStudentExamResultService studentExamResultService)
+        public StudentExamResultController(IStudentExamSubmissionService studentExamSubmissionService)
         {
-            _studentExamResultService = studentExamResultService;
+            _studentExamSubmissionService = studentExamSubmissionService;
         }
 
         [Authorize(Roles = nameof(RoleName.Student))]
@@ -34,7 +34,7 @@ namespace ExamSystem.API.Controllers
 
             try
             {
-                await _studentExamResultService.SubmitExamAsync(studentId, dto);
+                await _studentExamSubmissionService.SubmitExamAsync(studentId, dto);
                 return Ok("Exam submitted successfully");
             }
             catch (ArgumentNullException ex)
