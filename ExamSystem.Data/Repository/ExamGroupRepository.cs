@@ -30,6 +30,21 @@ namespace ExamSystem.Data.Repository
                    .ToListAsync();
         }
 
+        public async Task<bool> IsExamAssignedToAnyGroupAsync(Guid examId)
+        {
+            return await _dbSet.AnyAsync(e => e.ExamId == examId);
+        }
+
+        public async Task<bool> IsStudentAssignedToExamAsync(Guid studentId, Guid examId)
+        {
+            return await _context.student_group
+                .Join(_dbSet,
+                    studentGroup => studentGroup.GroupId,
+                    examGroup => examGroup.GroupId,
+                    (studentGroup, examGroup) => new { studentGroup, examGroup })
+                .AnyAsync(x => x.studentGroup.StudentId == studentId && x.examGroup.ExamId == examId);
+        }
+
 
   
     }
