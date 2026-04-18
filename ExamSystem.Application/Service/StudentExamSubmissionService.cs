@@ -38,17 +38,13 @@ namespace ExamSystem.Application.Service
                 throw new KeyNotFoundException($"There is no exam with Id: {dto.ExamId}");
             }
 
-            var examGroups = (await _unitofwork.ExamGroups.GetByExamAsync(dto.ExamId)).ToList();
-            if (!examGroups.Any())
+            bool isExamAssignedToAnyGroup = await _unitofwork.ExamGroups.IsExamAssignedToAnyGroupAsync(dto.ExamId);
+            if (!isExamAssignedToAnyGroup)
             {
                 throw new InvalidOperationException("This exam is not assigned to any group.");
             }
 
-            var studentGroupIds = (await _unitofwork.StudentGroup.GetGroupsByStudentIdAsync(studentId))
-                .Select(x => x.GroupId)
-                .ToHashSet();
-
-            bool canAccessExam = examGroups.Any(x => studentGroupIds.Contains(x.GroupId));
+            bool canAccessExam = await _unitofwork.ExamGroups.IsStudentAssignedToExamAsync(studentId, dto.ExamId);
             if (!canAccessExam)
             {
                 throw new UnauthorizedAccessException("This student is not assigned to a group that has this exam.");
@@ -60,13 +56,13 @@ namespace ExamSystem.Application.Service
                 throw new InvalidOperationException("This student has already submitted this exam.");
             }
 
-            var examQuestions = (await _unitofwork.ExamQuestions.GetByExamAsync(dto.ExamId)).ToList();
-            if (!examQuestions.Any())
+            int examQuestionsCount = await _unitofwork.ExamQuestions.CountByExamIdAsync(dto.ExamId);
+            if (examQuestionsCount == 0)
             {
                 throw new InvalidOperationException("This exam has no questions assigned.");
             }
 
-            if (dto.Answers.Count != examQuestions.Count)
+            if (dto.Answers.Count != examQuestionsCount)
             {
                 throw new InvalidOperationException("You must answer all exam questions before submitting.");
             }
@@ -82,9 +78,7 @@ namespace ExamSystem.Application.Service
                 throw new InvalidOperationException("A question cannot be answered more than once.");
             }
 
-            var examQuestionIds = examQuestions
-                .Select(x => x.QuestionId)
-                .ToHashSet();
+            var examQuestionIds = await _unitofwork.ExamQuestions.GetQuestionIdsByExamIdAsync(dto.ExamId);
 
             if (dto.Answers.Any(x => !examQuestionIds.Contains(x.QuestionId)))
             {
@@ -104,15 +98,10 @@ namespace ExamSystem.Application.Service
 
             foreach (var answerDto in dto.Answers)
             {
-                var option = await _unitofwork.QuestionOptions.GetByIdAsync(answerDto.OptionId);
+                var option = await _unitofwork.QuestionOptions.GetByIdAndQuestionIdAsync(answerDto.OptionId, answerDto.QuestionId);
                 if (option == null)
                 {
-                    throw new KeyNotFoundException($"There is no option with Id: {answerDto.OptionId}");
-                }
-
-                if (option.QuestionId != answerDto.QuestionId)
-                {
-                    throw new InvalidOperationException("The selected option does not belong to the submitted question.");
+                    throw new KeyNotFoundException($"There is no option with Id: {answerDto.OptionId} for question Id: {answerDto.QuestionId}");
                 }
 
                 var studentAnswer = new StudentExamAnswer
@@ -137,7 +126,7 @@ namespace ExamSystem.Application.Service
                 ExamId = dto.ExamId,
                 StudentId = studentId,
                 StudentScore = studentScore,
-                ExamScore = examQuestions.Count
+                ExamScore = examQuestionsCount
             };
 
             await _unitofwork.StudentExamResults.AddAsync(result);
