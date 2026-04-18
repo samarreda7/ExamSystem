@@ -13,7 +13,8 @@ namespace ExamSystem.Domain.IRepository
         Task<ExamQuestion?> GetByIdAsync(Guid examId, Guid questionId);
         Task<IEnumerable<ExamQuestion>> GetByExamAsync(Guid examId);
         Task<IEnumerable<ExamQuestion>> GetByQuestionAsync(Guid questionId);
-
+        Task<int> CountByExamIdAsync(Guid examId);
+        Task<HashSet<Guid>> GetQuestionIdsByExamIdAsync(Guid examId);
 
     }
 }

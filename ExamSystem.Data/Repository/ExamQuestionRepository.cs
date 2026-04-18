@@ -28,5 +28,18 @@ namespace ExamSystem.Data.Repository
                    .ToListAsync();
         }
 
+        public async Task<int> CountByExamIdAsync(Guid examId)
+        {
+            return await _dbSet.CountAsync(e => e.ExamId == examId);
+        }
+
+        public async Task<HashSet<Guid>> GetQuestionIdsByExamIdAsync(Guid examId)
+        {
+            return (await _dbSet.Where(e => e.ExamId == examId)
+                .Select(e => e.QuestionId)
+                .ToListAsync())
+                .ToHashSet();
+        }
+
     }
 }
