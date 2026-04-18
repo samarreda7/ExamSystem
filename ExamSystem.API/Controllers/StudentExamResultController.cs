@@ -10,22 +10,17 @@ namespace ExamSystem.API.Controllers
     [ApiController]
     public class StudentExamResultController : ControllerBase
     {
-        private readonly IStudentExamSubmissionService _studentExamSubmissionService;
+        private readonly IStudentExamResultService _studentExamResultService;
 
-        public StudentExamResultController(IStudentExamSubmissionService studentExamSubmissionService)
+        public StudentExamResultController(IStudentExamResultService studentExamResultService)
         {
-            _studentExamSubmissionService = studentExamSubmissionService;
+            _studentExamResultService = studentExamResultService;
         }
 
         [Authorize(Roles = nameof(RoleName.Student))]
-        [HttpPost("submit")]
-        public async Task<IActionResult> SubmitExamAsync([FromBody] SubmitExamDto dto)
+        [HttpGet("{examId:guid}")]
+        public async Task<IActionResult> GetStudentResultByExamIdAsync([FromRoute] Guid examId)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var studentIdClaim = User.FindFirst("uid")?.Value;
             if (string.IsNullOrEmpty(studentIdClaim) || !Guid.TryParse(studentIdClaim, out Guid studentId))
             {
@@ -34,24 +29,14 @@ namespace ExamSystem.API.Controllers
 
             try
             {
-                await _studentExamSubmissionService.SubmitExamAsync(studentId, dto);
-                return Ok("Exam submitted successfully");
-            }
-            catch (ArgumentNullException ex)
-            {
-                return BadRequest(new { error = ex.Message });
+                var result = await _studentExamResultService
+                    .GetStudentResultByStudentIdAndExamIdAsync(studentId, examId);
+
+                return Ok(result);
             }
             catch (KeyNotFoundException ex)
             {
                 return NotFound(new { error = ex.Message });
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return StatusCode(403, new { error = ex.Message });
-            }
-            catch (InvalidOperationException ex)
-            {
-                return Conflict(new { error = ex.Message });
             }
         }
     }
