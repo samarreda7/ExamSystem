@@ -13,5 +13,6 @@ namespace ExamSystem.Domain.IRepository
         Task<IEnumerable<QuestionOption>> GetByQuestionIdAsync(Guid questionId);
         Task<bool> HasCorrectOptionAsync(Guid questionId);
         Task<bool> HasOtherCorrectOptionAsync(Guid questionId, Guid optionId);
+        Task<QuestionOption?> GetByIdAndQuestionIdAsync(Guid optionId, Guid questionId);
     }
 }

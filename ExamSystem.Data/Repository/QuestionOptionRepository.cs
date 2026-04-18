@@ -35,5 +35,10 @@ namespace ExamSystem.Data.Repository
                 qo.Id != optionId &&
                 qo.IsCorrect);
         }
+
+        public async Task<QuestionOption?> GetByIdAndQuestionIdAsync(Guid optionId, Guid questionId)
+        {
+            return await _dbSet.FirstOrDefaultAsync(qo => qo.Id == optionId && qo.QuestionId == questionId);
+        }
     }
 }
