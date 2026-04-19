@@ -6,6 +6,7 @@ namespace ExamSystem.Application.IService
     {
         Task AddExamAsync(Guid teacherId, CreateExamDto dto);
         Task<IEnumerable<ShowExamDto>> GetTeacherExamsAsync(Guid teacherId);
+        Task UpdateExamAsync(Guid teacherId, Guid examId, UpdateExamDto dto);
         Task DeleteExamAsync(Guid teacherId, Guid examId);
     }
 }

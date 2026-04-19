@@ -53,6 +53,42 @@ namespace ExamSystem.Application.Service
             });
         }
 
+        public async Task UpdateExamAsync(Guid teacherId, Guid examId, UpdateExamDto dto)
+        {
+            var teacher = await _unitofwork.Teachers.GetByIdAsync(teacherId);
+            if (teacher == null)
+            {
+                throw new KeyNotFoundException($"there is no teacher with this Id {teacherId}");
+            }
+
+            var exam = await _unitofwork.Exams.GetByIdAsync(examId);
+            if (exam == null)
+            {
+                throw new KeyNotFoundException($"There is no exam with Id: {examId}");
+            }
+
+            if (exam.TeacherUserId != teacherId)
+            {
+                throw new UnauthorizedAccessException("this teacher is not Uthorized to update this exam");
+            }
+
+            if (dto == null)
+            {
+                throw new ArgumentNullException(nameof(dto));
+            }
+
+            if (dto.Name == null)
+            {
+                throw new InvalidDataException("Exam name is required ");
+            }
+
+            exam.Name = dto.Name;
+            exam.UpdatedAt = DateTime.UtcNow;
+
+            await _unitofwork.Exams.UpdateAsync(exam);
+            await _unitofwork.SaveChangesAsync();
+        }
+
         public async Task DeleteExamAsync(Guid teacherId, Guid examId)
         {
             var exam = await _unitofwork.Exams.GetByIdAsync(examId);
