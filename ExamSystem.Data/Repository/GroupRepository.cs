@@ -16,6 +16,10 @@ namespace ExamSystem.Data.Repository
         {
             return await _dbSet.AnyAsync(x => x.Id == groupId);
         }
+        public async Task<bool> IsGroupOwnedByTeacherAsync(Guid groupId, Guid teacherId)
+        {
+            return await _dbSet.AnyAsync(x => x.Id == groupId && x.TeacherUserId == teacherId);
+        }
         public async Task<bool> IsGroupNameExistAsync(string groupName)
         {
             return await _dbSet.AnyAsync(x => x.Name == groupName);
