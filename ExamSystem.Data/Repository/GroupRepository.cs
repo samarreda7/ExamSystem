@@ -32,6 +32,14 @@ namespace ExamSystem.Data.Repository
              
         }
 
+        public async Task<Group?> GetGroupByIdWithDetailsAsync(Guid groupId)
+        {
+            return await _dbSet
+                .Include(g => g.Subject)
+                .Include(g => g.Teacher)
+                .FirstOrDefaultAsync(g => g.Id == groupId);
+        }
+
         public async Task<IEnumerable<Group>> GetGroupsByTeacherIdAsync(Guid teacherId)
         {
             return await _dbSet.Include(g => g.Subject)

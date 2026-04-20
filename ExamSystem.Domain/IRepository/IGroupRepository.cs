@@ -10,6 +10,7 @@ namespace ExamSystem.Domain.IRepository
         Task<bool> IsGroupOwnedByTeacherAsync(Guid groupId, Guid teacherId);
         Task<bool> IsGroupNameExistAsync(string groupName);
         Task<IEnumerable<Group>> GetAllGroupsAsync();
+        Task<Group?> GetGroupByIdWithDetailsAsync(Guid groupId);
         Task<IEnumerable<Group>> GetGroupsByTeacherIdAsync(Guid teacherId);
     }
 }
