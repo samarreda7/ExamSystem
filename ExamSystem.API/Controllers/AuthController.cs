@@ -64,5 +64,26 @@ namespace ExamSystem.API.Controllers
                 return NotFound(ex.Message);
             }
         }
+
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<IActionResult> GetCurrentUserAsync()
+        {
+            var userIdClaim = User.FindFirst("uid")?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out Guid userId))
+            {
+                return Unauthorized("Invalid token claims.");
+            }
+
+            try
+            {
+                var user = await _userService.GetCurrentUserAsync(userId);
+                return Ok(user);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
     }
 }
