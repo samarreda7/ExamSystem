@@ -53,6 +53,36 @@ namespace ExamSystem.Application.Service
             });
         }
 
+        public async Task<ShowExamDto> GetExamByIdAsync(Guid teacherId, Guid examId)
+        {
+            var teacher = await _unitofwork.Teachers.GetByIdAsync(teacherId);
+            if (teacher == null)
+            {
+                throw new KeyNotFoundException($"there is no teacher with this Id {teacherId}");
+            }
+
+            var exam = await _unitofwork.Exams.GetExamByIdWithDetailsAsync(examId);
+            if (exam == null)
+            {
+                throw new KeyNotFoundException($"There is no exam with Id: {examId}");
+            }
+
+            if (exam.TeacherUserId != teacherId)
+            {
+                throw new UnauthorizedAccessException("this teacher is not Uthorized to view this exam");
+            }
+
+            return new ShowExamDto
+            {
+                Id = exam.Id,
+                Name = exam.Name,
+                TeacherFirstName = exam.Teacher.User.FirstName,
+                TeacherLastName = exam.Teacher.User.LastName,
+                QuestionsCount = exam.ExamQuestions.Count,
+                GroupsCount = exam.ExamGroups.Count,
+            };
+        }
+
         public async Task UpdateExamAsync(Guid teacherId, Guid examId, UpdateExamDto dto)
         {
             var teacher = await _unitofwork.Teachers.GetByIdAsync(teacherId);
