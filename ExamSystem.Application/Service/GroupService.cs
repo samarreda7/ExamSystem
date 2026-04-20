@@ -74,6 +74,23 @@ namespace ExamSystem.Application.Service
 
         }
 
+        public async Task<ShowGroupDto> GetGroupByIdAsync(Guid groupId)
+        {
+            var group = await _unitofwork.Groups.GetGroupByIdWithDetailsAsync(groupId);
+            if (group == null)
+            {
+                throw new KeyNotFoundException($"There is no group with Id: {groupId}");
+            }
+
+            return new ShowGroupDto
+            {
+                Id = group.Id,
+                Name = group.Name,
+                TeacherId = group.TeacherUserId,
+                SubjectName = group.Subject.Name,
+            };
+        }
+
         public async Task<IEnumerable<ShowGroupDto>> GetTeacherGroupsAsync(Guid teacherId)
         {
             var teacher = await _unitofwork.Teachers.GetByIdAsync(teacherId);
