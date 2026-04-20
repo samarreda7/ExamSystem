@@ -10,5 +10,6 @@ namespace ExamSystem.Domain.IRepository
     public interface IExamRepository : IBaseRepository<Exam>
     {
         Task<IEnumerable<Exam>> GetAllTeacherExamAsync(Guid teacherId);
+        Task<Exam?> GetExamByIdWithDetailsAsync(Guid examId);
     }
 }

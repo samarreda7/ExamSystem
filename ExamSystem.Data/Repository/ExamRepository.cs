@@ -20,6 +20,16 @@ namespace ExamSystem.Data.Repository
                                .ToListAsync();
         }
 
+        public async Task<Exam?> GetExamByIdWithDetailsAsync(Guid examId)
+        {
+            return await _dbSet
+                .Include(e => e.Teacher)
+                .ThenInclude(t => t.User)
+                .Include(e => e.ExamGroups)
+                .Include(e => e.ExamQuestions)
+                .FirstOrDefaultAsync(e => e.Id == examId);
+        }
+
 
 
     }
