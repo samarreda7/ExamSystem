@@ -55,6 +55,20 @@ namespace ExamSystem.API.Controllers
             return Ok(groups);
         }
 
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetGroupByIdAsync([FromRoute] Guid id)
+        {
+            try
+            {
+                var group = await _groupService.GetGroupByIdAsync(id);
+                return Ok(group);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+        }
+
         [Authorize(Roles = nameof(RoleName.Teacher))]
         [HttpGet("teacher/all")]
         public async Task<IActionResult> GetTeacherGroupsAsync()
