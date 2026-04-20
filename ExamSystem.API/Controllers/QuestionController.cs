@@ -102,6 +102,13 @@ namespace ExamSystem.API.Controllers
                 return StatusCode(403, new { error = ex.Message });
             }
         }
+
+        [HttpGet("types")]
+        public async Task<IActionResult> GetQuestionTypesAsync()
+        {
+            var questionTypes = await _questionService.GetQuestionTypesAsync();
+            return Ok(questionTypes);
+        }
         [Authorize(Roles = nameof(RoleName.Teacher))]
         [HttpGet("{questionId:guid}")]
         public async Task<IActionResult> GetQuestionByIdAsync(Guid questionId)
