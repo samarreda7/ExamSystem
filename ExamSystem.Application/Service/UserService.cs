@@ -105,6 +105,32 @@ namespace ExamSystem.Application.Service
             };
         }
 
+        public async Task<ShowCurrentUserDto> GetCurrentUserAsync(Guid userId)
+        {
+            var user = await _unitofwork.Users.GetByIdAsync(userId);
+            if (user == null)
+            {
+                throw new KeyNotFoundException($"There is no user with Id: {userId}");
+            }
+
+            var role = await _unitofwork.Roles.GetByIdAsync(user.RoleId);
+            if (role == null)
+            {
+                throw new KeyNotFoundException("Role not found");
+            }
+
+            return new ShowCurrentUserDto
+            {
+                UserId = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                Username = user.Username,
+                PhoneNumber = user.PhoneNumber,
+                Role = role.Name
+            };
+        }
+
 
         public async Task<bool> IsAdminExistsAsync()
         {

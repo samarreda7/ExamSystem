@@ -10,6 +10,7 @@ namespace ExamSystem.Application.IService
     public interface IUserService
     {
         Task<AuthResponseDto> LoginAsync(LoginDto dto);
+        Task<ShowCurrentUserDto> GetCurrentUserAsync(Guid userId);
         Task<bool> IsAdminExistsAsync();
         Task InitializeAdminAsync(InitAdminDto dto);
 
