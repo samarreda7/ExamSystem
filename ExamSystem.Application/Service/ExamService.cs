@@ -34,6 +34,16 @@ namespace ExamSystem.Application.Service
             await _unitofwork.Exams.AddAsync(exam);
             await _unitofwork.SaveChangesAsync();
         }
+        public async Task<int> GetExamsCountByTeacherIdAsync(Guid teacherId)
+        {
+            var teacher = await _unitofwork.Teachers.GetByIdAsync(teacherId);
+            if (teacher == null)
+            {
+                throw new KeyNotFoundException($"there is no teacher with this Id {teacherId}");
+            }
+
+            return await _unitofwork.Exams.GetExamsCountByTeacherIdAsync(teacherId);
+        }
         public async Task<IEnumerable<ShowExamDto>> GetTeacherExamsAsync(Guid teacherId)
         {
             var teacher = await _unitofwork.Teachers.GetByIdAsync(teacherId);
