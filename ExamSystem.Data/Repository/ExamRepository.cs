@@ -10,6 +10,11 @@ namespace ExamSystem.Data.Repository
     {
          public ExamRepository(AppDBContext context) : base(context) { }
 
+        public async Task<int> GetExamsCountByTeacherIdAsync(Guid teacherId)
+        {
+            return await _dbSet.CountAsync(e => e.TeacherUserId == teacherId);
+        }
+
         public async Task<IEnumerable<Exam>> GetAllTeacherExamAsync(Guid teacherId)
         {
             return await _dbSet.Where(e=>e.TeacherUserId== teacherId)
