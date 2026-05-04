@@ -24,6 +24,12 @@ namespace ExamSystem.Data.Repository
         {
             return await _dbSet.AnyAsync(x => x.Name == groupName);
         }
+
+        public async Task<int> GetGroupsCountByTeacherIdAsync(Guid teacherId)
+        {
+            return await _dbSet.CountAsync(g => g.TeacherUserId == teacherId);
+        }
+
         public async Task<IEnumerable<Group>> GetAllGroupsAsync()
         {
             return await _dbSet.Include(g => g.Subject)
