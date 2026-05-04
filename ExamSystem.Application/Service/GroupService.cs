@@ -91,6 +91,17 @@ namespace ExamSystem.Application.Service
             };
         }
 
+        public async Task<int> GetGroupsCountByTeacherIdAsync(Guid teacherId)
+        {
+            var teacher = await _unitofwork.Teachers.GetByIdAsync(teacherId);
+            if (teacher == null)
+            {
+                throw new KeyNotFoundException($"there is no teacher with this Id {teacherId}");
+            }
+
+            return await _unitofwork.Groups.GetGroupsCountByTeacherIdAsync(teacherId);
+        }
+
         public async Task<IEnumerable<ShowGroupDto>> GetTeacherGroupsAsync(Guid teacherId)
         {
             var teacher = await _unitofwork.Teachers.GetByIdAsync(teacherId);
