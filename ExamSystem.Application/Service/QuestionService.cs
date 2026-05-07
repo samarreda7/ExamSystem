@@ -102,24 +102,21 @@ namespace ExamSystem.Application.Service
                 TeacherLastName = teacherLastName,
             };
         }
-        public async Task<IEnumerable<ShowQuestionDto>> GetQuestionsBySubjectAsync(Guid subjectId,Guid teacherId)
+        public async Task<IEnumerable<ShowQuestionDto>> GetQuestionsBySubjectAsync(Guid teacherId)
         {
-            bool isSubjectExist = await _unitofwork.Subjects.IsSubjectExistAsync(subjectId);
-            if (!isSubjectExist)
-            {
-                throw new KeyNotFoundException($"There is no subject with Id: {subjectId}");
-            }
             var teacher = await _unitofwork.Teachers.GetByIdAsync(teacherId);
             if (teacher == null)
             {
                 throw new KeyNotFoundException($"there is no teacher with this Id {teacherId}");
             }
-            if (teacher.SubjectId != subjectId)
-            {
-                throw new InvalidDataException("You can only get questions for your own subject.");
 
+            bool isSubjectExist = await _unitofwork.Subjects.IsSubjectExistAsync(teacher.SubjectId);
+            if (!isSubjectExist)
+            {
+                throw new KeyNotFoundException($"There is no subject with Id: {teacher.SubjectId}");
             }
-            var question = await _unitofwork.Questions.GetQuestionsBySubjectIdAsync(subjectId);
+
+            var question = await _unitofwork.Questions.GetQuestionsBySubjectIdAsync(teacher.SubjectId);
             return question.Select(x => new ShowQuestionDto
             {
                 Id = x.Id,

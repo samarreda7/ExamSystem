@@ -8,7 +8,7 @@ namespace ExamSystem.Application.IService
         Task DeleteQuestionAsync(Guid questionId, Guid teacherId);
         Task<IEnumerable<string>> GetQuestionTypesAsync();
         Task<ShowQuestionDto> GetQuestionByIdAsync(Guid questionId, Guid teacherId);
-        Task<IEnumerable<ShowQuestionDto>> GetQuestionsBySubjectAsync(Guid subjectId, Guid teacherId);
+        Task<IEnumerable<ShowQuestionDto>> GetQuestionsBySubjectAsync(Guid teacherId);
         Task UpdateQuestionAsync(Guid questionId, Guid teacherId, UpdateQuestionDto dto);
     }
 }

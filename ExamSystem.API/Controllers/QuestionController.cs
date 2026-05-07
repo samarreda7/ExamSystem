@@ -75,8 +75,8 @@ namespace ExamSystem.API.Controllers
             }
         }
         [Authorize(Roles = nameof(RoleName.Teacher))]
-        [HttpGet("subject/{subjectId:guid}")]
-        public async Task<IActionResult> GetQuestionsBySubjectAsync(Guid subjectId)
+        [HttpGet("subject")]
+        public async Task<IActionResult> GetQuestionsBySubjectAsync()
         {
             var teacherIdClaim = User.FindFirst("uid")?.Value;
             if (string.IsNullOrEmpty(teacherIdClaim) || !Guid.TryParse(teacherIdClaim, out Guid teacherId))
@@ -85,7 +85,7 @@ namespace ExamSystem.API.Controllers
             }
             try
             {
-                var questions = await _questionService.GetQuestionsBySubjectAsync(subjectId, teacherId);
+                var questions = await _questionService.GetQuestionsBySubjectAsync(teacherId);
                 return Ok(questions);
             }
             catch (KeyNotFoundException ex)
