@@ -56,6 +56,31 @@ namespace ExamSystem.API.Controllers
         }
 
         [Authorize(Roles = nameof(RoleName.Teacher))]
+        [HttpGet("{examId:guid}/questions/{questionId:guid}/is-assigned")]
+        public async Task<IActionResult> IsQuestionAssignedToExamAsync([FromRoute] Guid examId, [FromRoute] Guid questionId)
+        {
+            var teacherIdClaim = User.FindFirst("uid")?.Value;
+            if (string.IsNullOrEmpty(teacherIdClaim) || !Guid.TryParse(teacherIdClaim, out Guid teacherId))
+            {
+                return Unauthorized("Invalid token claims.");
+            }
+
+            try
+            {
+                var isAssigned = await _examQuestionService.IsQuestionAssignedToExamAsync(teacherId, examId, questionId);
+                return Ok(isAssigned);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return StatusCode(403, new { error = ex.Message });
+            }
+        }
+
+        [Authorize(Roles = nameof(RoleName.Teacher))]
         [HttpDelete("{examId:guid}/questions/{questionId:guid}")]
         public async Task<IActionResult> RemoveQuestionFromExamAsync([FromRoute] Guid examId, [FromRoute] Guid questionId)
         {
