@@ -28,6 +28,11 @@ namespace ExamSystem.Data.Repository
                    .ToListAsync();
         }
 
+        public async Task<bool> IsQuestionAssignedToExamAsync(Guid examId, Guid questionId)
+        {
+            return await _dbSet.AnyAsync(e => e.ExamId == examId && e.QuestionId == questionId);
+        }
+
         public async Task<int> CountByExamIdAsync(Guid examId)
         {
             return await _dbSet.CountAsync(e => e.ExamId == examId);
