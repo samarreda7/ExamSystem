@@ -12,7 +12,5 @@ namespace ExamSystem.Application.DTO
     {
         public string Text { get; set; }
         public QuestionType Type { get; set; }
-        public Guid SubjectId { get; set; }
-
     }
 }

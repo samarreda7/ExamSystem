@@ -25,20 +25,18 @@ namespace ExamSystem.Application.Service
             {
                 throw new KeyNotFoundException($"there is no teacher with this Id {teacherId}");
             }
-            bool isSubjectExist = await _unitofwork.Subjects.IsSubjectExistAsync(dto.SubjectId);
+
+            bool isSubjectExist = await _unitofwork.Subjects.IsSubjectExistAsync(teacher.SubjectId);
             if (!isSubjectExist)
             {
-                throw new KeyNotFoundException($"There is no subject with Id: {dto.SubjectId}");
+                throw new KeyNotFoundException($"There is no subject with Id: {teacher.SubjectId}");
             }
-            if (teacher.SubjectId != dto.SubjectId)
-            {
-                throw new InvalidDataException("You can only add questions for your own subject.");
-            }
+
             var question = new Question
             {
                 Text = dto.Text,
                 Type = dto.Type,
-                SubjectId = dto.SubjectId,
+                SubjectId = teacher.SubjectId,
                 TeacherUserId = teacherId,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
