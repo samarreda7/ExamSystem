@@ -134,6 +134,34 @@ namespace ExamSystem.Application.Service
             });
         }
 
+        public async Task<bool> IsQuestionAssignedToExamAsync(Guid teacherId, Guid examId, Guid questionId)
+        {
+            var exam = await _unitofwork.Exams.GetByIdAsync(examId);
+            if (exam == null)
+            {
+                throw new KeyNotFoundException($"There is no exam with Id: {examId}");
+            }
+
+            var teacher = await _unitofwork.Teachers.GetByIdAsync(teacherId);
+            if (teacher == null)
+            {
+                throw new KeyNotFoundException($"there is no teacher with this Id {teacherId}");
+            }
+
+            if (exam.TeacherUserId != teacherId)
+            {
+                throw new UnauthorizedAccessException("You can only check questions in your own exams.");
+            }
+
+            var question = await _unitofwork.Questions.GetByIdAsync(questionId);
+            if (question == null)
+            {
+                throw new KeyNotFoundException($"There is no question with Id: {questionId}");
+            }
+
+            return await _unitofwork.ExamQuestions.IsQuestionAssignedToExamAsync(examId, questionId);
+        }
+
         public async Task RemoveQuestionFromExamAsync(Guid teacherId, Guid examId, Guid questionId)
         {
             var exam = await _unitofwork.Exams.GetByIdAsync(examId);

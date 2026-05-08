@@ -7,6 +7,7 @@ namespace ExamSystem.Application.IService
         Task AssignQuestionToExamAsync(Guid teacherId, AssignQuestionToExamDto dto);
         Task<IEnumerable<ShowQuestionByExamIdDto>> GetQuestionsByExamIdAsync(Guid teacherId, Guid examId);
         Task<IEnumerable<ShowQuestionWithOptionsByExamIdDto>> GetQuestionsByExamIdForStudentAsync(Guid studentId, Guid examId);
+        Task<bool> IsQuestionAssignedToExamAsync(Guid teacherId, Guid examId, Guid questionId);
         Task RemoveQuestionFromExamAsync(Guid teacherId, Guid examId, Guid questionId);
     }
 }
