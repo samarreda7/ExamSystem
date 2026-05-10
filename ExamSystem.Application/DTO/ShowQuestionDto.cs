@@ -8,6 +8,7 @@ namespace ExamSystem.Application.DTO
         public Guid Id { get; set; }
         public required string Text { get; set; }
         public QuestionType Type { get; set; }
+        public Guid TeacherOwnerId { get; set; }
         public required string TeacherFirstName { get; set; }
         public required string TeacherLastName { get; set; }
 

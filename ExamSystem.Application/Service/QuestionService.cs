@@ -96,6 +96,7 @@ namespace ExamSystem.Application.Service
                 Id = question.Id,
                 Text = question.Text,
                 Type = question.Type,
+                TeacherOwnerId = question.TeacherUserId,
                 TeacherFirstName = teacherFirstName,
                 TeacherLastName = teacherLastName,
             };
@@ -120,6 +121,7 @@ namespace ExamSystem.Application.Service
                 Id = x.Id,
                 Text = x.Text,
                 Type = x.Type,
+                TeacherOwnerId = x.TeacherUserId,
                 TeacherFirstName = x.Teacher.User.FirstName,
                 TeacherLastName = x.Teacher.User.LastName,
             });
