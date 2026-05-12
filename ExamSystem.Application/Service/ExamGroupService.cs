@@ -90,6 +90,34 @@ namespace ExamSystem.Application.Service
             });
         }
 
+        public async Task<bool> IsExamAssignedToGroupAsync(Guid teacherId, Guid examId, Guid groupId)
+        {
+            var exam = await _unitofwork.Exams.GetByIdAsync(examId);
+            if (exam == null)
+            {
+                throw new KeyNotFoundException($"There is no exam with Id: {examId}");
+            }
+
+            var group = await _unitofwork.Groups.GetByIdAsync(groupId);
+            if (group == null)
+            {
+                throw new KeyNotFoundException($"There is no group with Id: {groupId}");
+            }
+
+            var teacher = await _unitofwork.Teachers.GetByIdAsync(teacherId);
+            if (teacher == null)
+            {
+                throw new KeyNotFoundException($"there is no teacher with this Id {teacherId}");
+            }
+
+            if (exam.TeacherUserId != teacherId || group.TeacherUserId != teacherId)
+            {
+                throw new UnauthorizedAccessException("You can only check your own exams and your own groups.");
+            }
+
+            return await _unitofwork.ExamGroups.IsExamAssignedToGroupAsync(examId, groupId);
+        }
+
         public async Task RemoveExamFromGroupAsync(Guid teacherId, Guid examId, Guid groupId)
         {
             var exam = await _unitofwork.Exams.GetByIdAsync(examId);
