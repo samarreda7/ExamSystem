@@ -9,7 +9,5 @@ namespace ExamSystem.Application.DTO
     public class CreateGroupDto
     {
         public string Name { get; set; }
-        public Guid SubjectId { get; set; }
-
     }
 }

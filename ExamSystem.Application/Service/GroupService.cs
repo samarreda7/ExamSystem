@@ -28,22 +28,22 @@ namespace ExamSystem.Application.Service
             {
                 throw new InvalidDataException("A Group with this name already exists.");
             }
-            bool isTeacherExist = await _unitofwork.Teachers.IsTeacherExistAsync(teacherId);
-            if (!isTeacherExist)
+            var teacher = await _unitofwork.Teachers.GetByIdAsync(teacherId);
+            if (teacher == null)
             {
                 throw new KeyNotFoundException($"No teacher found with Id: {teacherId}");
             }
 
-            bool isSubjectExist = await _unitofwork.Subjects.IsSubjectExistAsync(groupDto.SubjectId);
+            bool isSubjectExist = await _unitofwork.Subjects.IsSubjectExistAsync(teacher.SubjectId);
             if (!isSubjectExist)
             {
-                throw new KeyNotFoundException($"No subject found with Id: {groupDto.SubjectId}");
+                throw new KeyNotFoundException($"No subject found with Id: {teacher.SubjectId}");
             }
             var group = new Group
             {
                 Name = groupDto.Name,
                 TeacherUserId=teacherId,
-                SubjectId= groupDto.SubjectId,
+                SubjectId = teacher.SubjectId,
             };
 
             await _unitofwork.Groups.AddAsync(group);
