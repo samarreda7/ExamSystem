@@ -95,6 +95,34 @@ namespace ExamSystem.Application.Service
             });
         }
 
+        public async Task<bool> IsStudentAssignedToGroupAsync(Guid studentId, Guid groupId, Guid teacherId)
+        {
+            var student = await _unitofwork.Students.GetByIdAsync(studentId);
+            if (student == null)
+            {
+                throw new KeyNotFoundException($"there is no student with this id {studentId}");
+            }
+
+            var group = await _unitofwork.Groups.GetByIdAsync(groupId);
+            if (group == null)
+            {
+                throw new KeyNotFoundException($"there is no group with this id {groupId}");
+            }
+
+            var teacher = await _unitofwork.Teachers.GetByIdAsync(teacherId);
+            if (teacher == null)
+            {
+                throw new KeyNotFoundException($"there is no teacher with this Id {teacherId}");
+            }
+
+            if (group.TeacherUserId != teacherId)
+            {
+                throw new UnauthorizedAccessException("This teacher is not assigned to the target group.");
+            }
+
+            return await _unitofwork.StudentGroup.IsStudentAssignedToThisGroupAsync(studentId, groupId);
+        }
+
         public async Task ReassignStudentToAnotherGroupAsync(Guid groupId, Guid studentId, Guid NewGroupId, Guid teacherId)
         {
             var student = await _unitofwork.Students.GetByIdAsync(studentId);
