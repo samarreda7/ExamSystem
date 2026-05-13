@@ -30,6 +30,11 @@ namespace ExamSystem.Data.Repository
                    .ToListAsync();
         }
 
+        public async Task<int> GetExamCountByGroupIdAsync(Guid groupId)
+        {
+            return await _dbSet.CountAsync(e => e.GroupId == groupId);
+        }
+
         public async Task<bool> IsExamAssignedToGroupAsync(Guid examId, Guid groupId)
         {
             return await _dbSet.AnyAsync(e => e.ExamId == examId && e.GroupId == groupId);
