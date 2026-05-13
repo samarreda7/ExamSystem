@@ -98,6 +98,15 @@ namespace ExamSystem.Application.Service
                 throw new UnauthorizedAccessException("You can only delete options for your own questions.");
             }
 
+            if (option.IsCorrect)
+            {
+                var examQuestions = await _unitofwork.ExamQuestions.GetByQuestionAsync(question.Id);
+                foreach (var examQuestion in examQuestions)
+                {
+                    await _unitofwork.ExamQuestions.DeleteAsync(examQuestion);
+                }
+            }
+
             await _unitofwork.QuestionOptions.DeleteAsync(option);
             await _unitofwork.SaveChangesAsync();
         }
