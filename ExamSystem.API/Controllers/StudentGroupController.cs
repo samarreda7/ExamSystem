@@ -35,6 +35,25 @@ namespace ExamSystem.API.Controllers
             catch (UnauthorizedAccessException ex) { return StatusCode(403, new { error = ex.Message }); }
         }
 
+        [Authorize(Roles = nameof(RoleName.Teacher))]
+        [HttpGet("group/{groupId:guid}/students/count")]
+        public async Task<IActionResult> GetStudentCountByGroupIdAsync(Guid groupId)
+        {
+            var teacherIdClaim = User.FindFirst("uid")?.Value;
+            if (string.IsNullOrEmpty(teacherIdClaim) || !Guid.TryParse(teacherIdClaim, out Guid teacherId))
+            {
+                return Unauthorized("Invalid token claims.");
+            }
+
+            try
+            {
+                var count = await _studentGroupService.GetStudentCountByGroupIdAsync(groupId, teacherId);
+                return Ok(count);
+            }
+            catch (KeyNotFoundException ex) { return NotFound(new { error = ex.Message }); }
+            catch (UnauthorizedAccessException ex) { return StatusCode(403, new { error = ex.Message }); }
+        }
+
         [Authorize(Roles = nameof(RoleName.Student))]
         [HttpGet("my-groups")]
         public async Task<IActionResult> GetMyGroupsAsync()

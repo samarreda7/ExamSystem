@@ -12,6 +12,7 @@ namespace ExamSystem.Domain.IRepository
         Task<bool> IsStudentAssignedToThisGroupAsync(Guid StudentId, Guid GroupId);
         Task<IEnumerable<StudentGroup>> GetGroupsByStudentIdAsync(Guid studentId);
         Task<IEnumerable<StudentGroup>> GetStudentsByGroupIdAsync(Guid GroupId);
+        Task<int> GetStudentCountByGroupIdAsync(Guid groupId);
         Task<StudentGroup?> GetStudentGroupAssign(Guid StudentId, Guid GroupId);
     }
 }
