@@ -44,6 +44,12 @@ namespace ExamSystem.Application.Service
                 throw new KeyNotFoundException($"There is no question with Id: {dto.QuestionId}");
             }
 
+            var hasCorrectOption = await _unitofwork.QuestionOptions.HasCorrectOptionAsync(dto.QuestionId);
+            if (!hasCorrectOption)
+            {
+                throw new InvalidOperationException("Question must have a correct option before it can be assigned to an exam.");
+            }
+
             var examQuestion = await _unitofwork.ExamQuestions.GetByIdAsync(dto.ExamId, dto.QuestionId);
             if (examQuestion != null)
             {
