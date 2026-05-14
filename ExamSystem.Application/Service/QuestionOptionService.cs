@@ -220,6 +220,15 @@ namespace ExamSystem.Application.Service
                 }
             }
 
+            if (option.IsCorrect && !dto.IsCorrect)
+            {
+                var examQuestions = await _unitofwork.ExamQuestions.GetByQuestionAsync(question.Id);
+                foreach (var examQuestion in examQuestions)
+                {
+                    await _unitofwork.ExamQuestions.DeleteAsync(examQuestion);
+                }
+            }
+
             option.Text = dto.Text;
             option.IsCorrect = dto.IsCorrect;
 
