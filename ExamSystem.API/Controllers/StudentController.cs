@@ -27,7 +27,7 @@ namespace ExamSystem.API.Controllers
             try
             {
                 await _studentService.AddStudentAsync(studentDto);
-                return Created(string.Empty, "Student added successfully");
+                return Created(string.Empty, new { message = "Student added successfully" });
             }
             catch (ArgumentNullException ex)
             {
@@ -67,30 +67,6 @@ namespace ExamSystem.API.Controllers
                 return NotFound(ex.Message);
             }
         }
-        [Authorize(Roles = nameof(RoleName.Student))]
-        [HttpDelete]
-        public async Task<IActionResult> DeleteStudentAsync()
-        {
-            var studentIdClaim = User.FindFirst("uid")?.Value;
-            if (string.IsNullOrEmpty(studentIdClaim) || !Guid.TryParse(studentIdClaim, out Guid studentId))
-            {
-                return Unauthorized("Invalid token claims.");
-            }
-            try
-            {
-                await _studentService.DeleteStudentAsync(studentId);
-                return Ok("student Deleted");
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return Conflict(ex.Message);
-            }
-        }
-
         [Authorize(Roles = nameof(RoleName.Student))]
         [HttpPut]
         public async Task<IActionResult> UpdateStudentAsync([FromBody] UpdateStudentDto dto)

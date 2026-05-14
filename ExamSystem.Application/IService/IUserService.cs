@@ -11,6 +11,7 @@ namespace ExamSystem.Application.IService
     {
         Task<AuthResponseDto> LoginAsync(LoginDto dto);
         Task<ShowCurrentUserDto> GetCurrentUserAsync(Guid userId);
+        Task DeleteCurrentUserAsync(Guid userId);
         Task<bool> IsAdminExistsAsync();
         Task InitializeAdminAsync(InitAdminDto dto);
 

@@ -67,29 +67,6 @@ namespace ExamSystem.API.Controllers
             }
         }
         [Authorize(Roles = nameof(RoleName.Teacher))]
-        [HttpDelete]
-        public async Task<IActionResult> DeleteTeacherAsync()
-        {
-            var teacherIdClaim = User.FindFirst("uid")?.Value;
-            if (string.IsNullOrEmpty(teacherIdClaim) || !Guid.TryParse(teacherIdClaim, out Guid teacherId))
-            {
-                return Unauthorized("Invalid token claims.");
-            }
-            try
-            {
-                await _teacherService.DeleteTeacherAsync(teacherId);
-                return Ok("Teacher Deleted");
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return Conflict(ex.Message);
-            }
-        }
-        [Authorize(Roles = nameof(RoleName.Teacher))]
         [HttpPut]
         public async Task<IActionResult> UpdateTeacherAsync([FromBody]UpdateTeacherDto dto)
         {

@@ -131,6 +131,35 @@ namespace ExamSystem.Application.Service
             };
         }
 
+        public async Task DeleteCurrentUserAsync(Guid userId)
+        {
+            var user = await _unitofwork.Users.GetByIdAsync(userId);
+            if (user == null)
+            {
+                throw new KeyNotFoundException($"There is no user with Id: {userId}");
+            }
+
+            var role = await _unitofwork.Roles.GetByIdAsync(user.RoleId);
+            if (role == null)
+            {
+                throw new KeyNotFoundException("Role not found");
+            }
+
+            if (role.Name == RoleName.Student.ToString())
+            {
+                await DeleteStudentAccountAsync(userId);
+                return;
+            }
+
+            if (role.Name == RoleName.Teacher.ToString())
+            {
+                await DeleteTeacherAccountAsync(userId);
+                return;
+            }
+
+            throw new InvalidOperationException("This account type cannot be deleted from this endpoint.");
+        }
+
 
         public async Task<bool> IsAdminExistsAsync()
         {
@@ -172,6 +201,56 @@ namespace ExamSystem.Application.Service
             adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, dto.Password);
 
             await _unitofwork.Users.AddAsync(adminUser);
+            await _unitofwork.SaveChangesAsync();
+        }
+
+        private async Task DeleteStudentAccountAsync(Guid userId)
+        {
+            var student = await _unitofwork.Students.GetStudentDetailsById(userId);
+            if (student == null)
+            {
+                throw new KeyNotFoundException($"There is no student with this {userId}");
+            }
+
+            await _unitofwork.Students.DeleteAsync(student);
+            await _unitofwork.Users.DeleteAsync(student.User);
+            await _unitofwork.SaveChangesAsync();
+        }
+
+        private async Task DeleteTeacherAccountAsync(Guid userId)
+        {
+            var teacher = await _unitofwork.Teachers.GetTeacherDetailsById(userId);
+            var user = await _unitofwork.Users.GetByIdAsync(userId);
+
+            if (teacher == null)
+            {
+                throw new KeyNotFoundException($"There is no teacher with this {userId}");
+            }
+
+            if (user == null)
+            {
+                throw new KeyNotFoundException($"There is no user with this {userId}");
+            }
+
+            if (teacher.Groups != null && teacher.Groups.Any())
+            {
+                throw new InvalidOperationException(
+                    "Cannot delete this teacher because they are assigned to one or more groups."
+                );
+            }
+
+            foreach (var exam in teacher.Exams)
+            {
+                await _unitofwork.Exams.DeleteAsync(exam);
+            }
+
+            foreach (var question in teacher.Questions)
+            {
+                await _unitofwork.Questions.DeleteAsync(question);
+            }
+
+            await _unitofwork.Teachers.DeleteAsync(teacher);
+            await _unitofwork.Users.DeleteAsync(user);
             await _unitofwork.SaveChangesAsync();
         }
     }

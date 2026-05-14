@@ -85,5 +85,30 @@ namespace ExamSystem.API.Controllers
                 return NotFound(ex.Message);
             }
         }
+
+        [Authorize]
+        [HttpDelete("me")]
+        public async Task<IActionResult> DeleteCurrentUserAsync()
+        {
+            var userIdClaim = User.FindFirst("uid")?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out Guid userId))
+            {
+                return Unauthorized("Invalid token claims.");
+            }
+
+            try
+            {
+                await _userService.DeleteCurrentUserAsync(userId);
+                return Ok("Account deleted successfully.");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ex.Message);
+            }
+        }
     }
 }
