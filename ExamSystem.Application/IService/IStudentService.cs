@@ -12,7 +12,6 @@ namespace ExamSystem.Application.IService
         Task AddStudentAsync(CreateStudentDto user);
         Task<IEnumerable<ShowStudentDto>> GetStudentsWithAllDetailsAsync();
         Task<ShowStudentDto> GetStudentByIdAsync(Guid id);
-        Task UpdateStudentAsync(Guid id, UpdateStudentDto dto);
         Task DeleteStudentAsync(Guid id);
         
     }

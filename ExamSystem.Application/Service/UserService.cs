@@ -131,6 +131,40 @@ namespace ExamSystem.Application.Service
             };
         }
 
+        public async Task UpdateCurrentUserAsync(Guid userId, UpdateProfileDto dto)
+        {
+            if (dto == null)
+            {
+                throw new ArgumentNullException(nameof(dto), "Update data cannot be null.");
+            }
+
+            var user = await _unitofwork.Users.GetByIdAsync(userId);
+            if (user == null)
+            {
+                throw new KeyNotFoundException($"There is no user with Id: {userId}");
+            }
+
+            var role = await _unitofwork.Roles.GetByIdAsync(user.RoleId);
+            if (role == null)
+            {
+                throw new KeyNotFoundException("Role not found");
+            }
+
+            if (role.Name == RoleName.Student.ToString())
+            {
+                await UpdateStudentProfileAsync(userId, dto);
+                return;
+            }
+
+            if (role.Name == RoleName.Teacher.ToString())
+            {
+                await UpdateTeacherProfileAsync(userId, dto);
+                return;
+            }
+
+            throw new InvalidOperationException("This account type cannot be updated from this endpoint.");
+        }
+
         public async Task DeleteCurrentUserAsync(Guid userId)
         {
             var user = await _unitofwork.Users.GetByIdAsync(userId);
@@ -251,6 +285,53 @@ namespace ExamSystem.Application.Service
 
             await _unitofwork.Teachers.DeleteAsync(teacher);
             await _unitofwork.Users.DeleteAsync(user);
+            await _unitofwork.SaveChangesAsync();
+        }
+
+        private async Task UpdateStudentProfileAsync(Guid userId, UpdateProfileDto dto)
+        {
+            var student = await _unitofwork.Students.GetStudentDetailsById(userId);
+            if (student == null)
+            {
+                throw new KeyNotFoundException($"There is no student with this {userId}");
+            }
+
+            await UpdateUserProfileAsync(student.User, userId, dto);
+        }
+
+        private async Task UpdateTeacherProfileAsync(Guid userId, UpdateProfileDto dto)
+        {
+            var teacher = await _unitofwork.Teachers.GetTeacherDetailsById(userId);
+            if (teacher == null)
+            {
+                throw new KeyNotFoundException($"There is no teacher with this {userId}");
+            }
+
+            await UpdateUserProfileAsync(teacher.User, userId, dto);
+        }
+
+        private async Task UpdateUserProfileAsync(User user, Guid userId, UpdateProfileDto dto)
+        {
+            bool isEmailExist = await _unitofwork.Users.IsEmailExistForAnotherUser(dto.Email, userId);
+            if (isEmailExist)
+            {
+                throw new InvalidOperationException("Email is already exist");
+            }
+
+            bool isUsernameExist = await _unitofwork.Users.IsUsernameExistForAnotherUser(dto.Username, userId);
+            if (isUsernameExist)
+            {
+                throw new InvalidOperationException("Username is already exist");
+            }
+
+            user.FirstName = dto.FirstName;
+            user.LastName = dto.LastName;
+            user.Email = dto.Email;
+            user.Username = dto.Username;
+            user.PhoneNumber = dto.PhoneNumber;
+            user.UpdatedAt = DateTime.UtcNow;
+
+            await _unitofwork.Users.UpdateAsync(user);
             await _unitofwork.SaveChangesAsync();
         }
     }

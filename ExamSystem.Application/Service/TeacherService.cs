@@ -133,44 +133,6 @@ namespace ExamSystem.Application.Service
             await _unitofwork.Users.DeleteAsync(user);
             await _unitofwork.SaveChangesAsync();
         }
-        public async Task UpdateTeacherAsync(Guid id, UpdateTeacherDto dto)
-        {
-            if (dto == null)
-            {
-                throw new ArgumentNullException(nameof(dto), "Update data cannot be null.");
-            }
-            var teacher = await _unitofwork.Teachers.GetTeacherDetailsById(id);
-            if (teacher == null)
-            {
-                throw new KeyNotFoundException($"There is no teacher with this {id}");
-            }
-            bool isEmailExist = await _unitofwork.Users.IsEmailExistForAnotherUser(dto.Email, id);
-            if (isEmailExist)
-            {
-                throw new InvalidOperationException("Email is already exist");
-            }
-            bool isUsernameExist = await _unitofwork.Users.IsUsernameExistForAnotherUser(dto.Username, id);
-            if (isUsernameExist)
-            {
-                throw new InvalidOperationException("Username is already exist");
-            }
-            bool isSubjectExist = await _unitofwork.Subjects.IsSubjectExistAsync(dto.SubjectId);
-            if (!isSubjectExist)
-            {
-                throw new KeyNotFoundException($"There is no subject with Id: {dto.SubjectId}");
-            }
-            teacher.User.FirstName = dto.FirstName;
-            teacher.User.LastName = dto.LastName;
-            teacher.User.Username = dto.Username;
-            teacher.User.Email = dto.Email;
-            teacher.User.PhoneNumber = dto.PhoneNumber;
-            teacher.SubjectId = dto.SubjectId;
-            teacher.User.UpdatedAt = DateTime.UtcNow;
-
-            await _unitofwork.Teachers.UpdateAsync(teacher);
-            await _unitofwork.SaveChangesAsync();
-
-        }
         public async Task<IEnumerable<ShowTeacherDto>> GetTeachersBySubjectIdAsync(Guid subjectId)
         {
             bool isSubjectExist = await _unitofwork.Subjects.IsSubjectExistAsync(subjectId);

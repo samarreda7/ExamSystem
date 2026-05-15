@@ -66,34 +66,6 @@ namespace ExamSystem.API.Controllers
                 return NotFound(ex.Message);
             }
         }
-        [Authorize(Roles = nameof(RoleName.Teacher))]
-        [HttpPut]
-        public async Task<IActionResult> UpdateTeacherAsync([FromBody]UpdateTeacherDto dto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var teacherIdClaim = User.FindFirst("uid")?.Value;
-            if (string.IsNullOrEmpty(teacherIdClaim) || !Guid.TryParse(teacherIdClaim, out Guid teacherId))
-            {
-                return Unauthorized("Invalid token claims.");
-            }
-            try
-            {
-                await _teacherService.UpdateTeacherAsync(teacherId,dto);
-                return Ok("Teacher Updated Successfully");
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return Conflict(ex.Message);
-            }
-        }
-
         [Authorize(Roles = nameof(RoleName.Admin))]
         [HttpGet("subject/{subjectId:guid}")]
         public async Task<IActionResult> GetTeachersBySubjectIdAsync([FromRoute]Guid subjectId)

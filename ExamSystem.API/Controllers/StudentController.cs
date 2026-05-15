@@ -1,6 +1,5 @@
 ﻿using ExamSystem.Application.DTO;
 using ExamSystem.Application.IService;
-using ExamSystem.Application.Service;
 using ExamSystem.Domain.ValueTypes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -65,33 +64,6 @@ namespace ExamSystem.API.Controllers
             catch (KeyNotFoundException ex)
             {
                 return NotFound(ex.Message);
-            }
-        }
-        [Authorize(Roles = nameof(RoleName.Student))]
-        [HttpPut]
-        public async Task<IActionResult> UpdateStudentAsync([FromBody] UpdateStudentDto dto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var studentIdClaim = User.FindFirst("uid")?.Value;
-            if (string.IsNullOrEmpty(studentIdClaim) || !Guid.TryParse(studentIdClaim, out Guid studentId))
-            {
-                return Unauthorized("Invalid token claims.");
-            }
-            try
-            {
-                await _studentService.UpdateStudentAsync(studentId, dto);
-                return Ok("student Updated Successfully");
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return Conflict(ex.Message);
             }
         }
     }
