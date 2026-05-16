@@ -14,11 +14,12 @@ namespace ExamSystem.Data.Repository
 
         public async Task<ExamGroup?> GetByIdAsync(Guid examId, Guid grouppId)
         {
-            return await _dbSet.FindAsync(examId ,grouppId);
+            return await _dbSet.FindAsync(examId, grouppId);
         }
-        public async Task<IEnumerable<ExamGroup>> GetByExamAsync(Guid examId) { 
-            return await _dbSet.Where(e=>e.ExamId == examId)
-                .Include(e=>e.Group)
+        public async Task<IEnumerable<ExamGroup>> GetByExamAsync(Guid examId)
+        {
+            return await _dbSet.Where(e => e.ExamId == examId)
+                .Include(e => e.Group)
                 .ToListAsync();
         }
         public async Task<IEnumerable<ExamGroup>> GetByGroupAsync(Guid groupId)
@@ -33,6 +34,20 @@ namespace ExamSystem.Data.Repository
         public async Task<int> GetExamCountByGroupIdAsync(Guid groupId)
         {
             return await _dbSet.CountAsync(e => e.GroupId == groupId);
+        }
+
+        public async Task<int> GetAssignedExamCountByStudentIdAsync(Guid studentId)
+        {
+            var groupIds = await _context.student_group
+            .Where(sg => sg.StudentId == studentId)
+            .Select(sg => sg.GroupId)
+            .ToListAsync();
+
+            return await _dbSet
+            .Where(eg => groupIds.Contains(eg.GroupId))
+            .Select(eg => eg.ExamId)
+            .Distinct()
+            .CountAsync();
         }
 
         public async Task<bool> IsExamAssignedToGroupAsync(Guid examId, Guid groupId)
@@ -56,6 +71,6 @@ namespace ExamSystem.Data.Repository
         }
 
 
-  
+
     }
 }

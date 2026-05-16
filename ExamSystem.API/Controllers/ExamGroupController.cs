@@ -105,6 +105,21 @@ namespace ExamSystem.API.Controllers
             }
         }
 
+        [Authorize(Roles = $"{nameof(RoleName.Teacher)},{nameof(RoleName.Admin)}")]
+        [HttpGet("students/{studentId:guid}/exams/count")]
+        public async Task<IActionResult> GetAssignedExamCountByStudentIdAsync([FromRoute] Guid studentId)
+        {
+            try
+            {
+                var count = await _examGroupService.GetAssignedExamCountByStudentIdAsync(studentId);
+                return Ok(count);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+        }
+
         [Authorize(Roles = nameof(RoleName.Teacher))]
         [HttpDelete("{examId:guid}/groups/{groupId:guid}")]
         public async Task<IActionResult> RemoveExamFromGroupAsync([FromRoute] Guid examId, [FromRoute] Guid groupId)

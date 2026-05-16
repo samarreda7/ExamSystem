@@ -112,6 +112,17 @@ namespace ExamSystem.Application.Service
             return await _unitofwork.ExamGroups.GetExamCountByGroupIdAsync(groupId);
         }
 
+        public async Task<int> GetAssignedExamCountByStudentIdAsync(Guid studentId)
+        {
+            var student = await _unitofwork.Students.GetByIdAsync(studentId);
+            if (student == null)
+            {
+                throw new KeyNotFoundException($"There is no student with this {studentId}");
+            }
+
+            return await _unitofwork.ExamGroups.GetAssignedExamCountByStudentIdAsync(studentId);
+        }
+
         public async Task<bool> IsExamAssignedToGroupAsync(Guid teacherId, Guid examId, Guid groupId)
         {
             var exam = await _unitofwork.Exams.GetByIdAsync(examId);
