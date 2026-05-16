@@ -21,6 +21,12 @@ namespace ExamSystem.Data.Repository
                 .ThenInclude(g => g.Subject)
                 .ToListAsync();
         }
+
+        public async Task<int> GetGroupCountByStudentIdAsync(Guid studentId)
+        {
+            return await _dbSet.CountAsync(s => s.StudentId == studentId);
+        }
+
         public async Task<IEnumerable<StudentGroup>> GetStudentsByGroupIdAsync(Guid GroupId) 
         {
         return await _dbSet.Where(s=>s.GroupId == GroupId)

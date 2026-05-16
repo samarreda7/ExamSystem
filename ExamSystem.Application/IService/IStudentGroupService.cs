@@ -10,6 +10,7 @@ namespace ExamSystem.Application.IService
     public interface IStudentGroupService
     {
         Task AssignStudentToGroupAsync(Guid studentId, Guid groupId, Guid teacherId);
+        Task<int> GetGroupCountByStudentIdAsync(Guid studentId);
         Task<IEnumerable<ShowGroupDto>> GetGroupsByStudentIdAsync(Guid studentId);
         Task<IEnumerable<ShowStudentDto>> GetStudentsByGroupIdAsync(Guid groupId, Guid teacherId);
         Task<int> GetStudentCountByGroupIdAsync(Guid groupId, Guid teacherId);

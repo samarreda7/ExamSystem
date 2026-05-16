@@ -95,6 +95,17 @@ namespace ExamSystem.Application.Service
             });
         }
 
+        public async Task<int> GetGroupCountByStudentIdAsync(Guid studentId)
+        {
+            var student = await _unitofwork.Students.GetByIdAsync(studentId);
+            if (student == null)
+            {
+                throw new KeyNotFoundException($"there is no student with this id {studentId}");
+            }
+
+            return await _unitofwork.StudentGroup.GetGroupCountByStudentIdAsync(studentId);
+        }
+
         public async Task<int> GetStudentCountByGroupIdAsync(Guid groupId, Guid teacherId)
         {
             var group = await _unitofwork.Groups.GetByIdAsync(groupId);

@@ -75,6 +75,27 @@ namespace ExamSystem.API.Controllers
             }
         }
 
+        [Authorize(Roles = nameof(RoleName.Student))]
+        [HttpGet("my-groups/count")]
+        public async Task<IActionResult> GetMyGroupsCountAsync()
+        {
+            var studentIdClaim = User.FindFirst("uid")?.Value;
+            if (string.IsNullOrEmpty(studentIdClaim) || !Guid.TryParse(studentIdClaim, out Guid studentId))
+            {
+                return Unauthorized("Invalid token claims.");
+            }
+
+            try
+            {
+                var count = await _studentGroupService.GetGroupCountByStudentIdAsync(studentId);
+                return Ok(count);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+        }
+
         [Authorize(Roles = nameof(RoleName.Teacher))]
         [HttpPost("assign")]
         public async Task<IActionResult> AssignStudentToGroupAsync([FromBody]AssignStudentToGroupDto dto)
