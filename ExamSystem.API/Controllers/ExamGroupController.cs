@@ -105,10 +105,16 @@ namespace ExamSystem.API.Controllers
             }
         }
 
-        [Authorize(Roles = $"{nameof(RoleName.Teacher)},{nameof(RoleName.Admin)}")]
-        [HttpGet("students/{studentId:guid}/exams/count")]
-        public async Task<IActionResult> GetAssignedExamCountByStudentIdAsync([FromRoute] Guid studentId)
+        [Authorize(Roles = nameof(RoleName.Student))]
+        [HttpGet("students/exams/count")]
+        public async Task<IActionResult> GetAssignedExamCountByStudentIdAsync()
         {
+            var studentIdClaim = User.FindFirst("uid")?.Value;
+            if (string.IsNullOrEmpty(studentIdClaim) || !Guid.TryParse(studentIdClaim, out Guid studentId))
+            {
+                return Unauthorized("Invalid token claims.");
+            }
+
             try
             {
                 var count = await _examGroupService.GetAssignedExamCountByStudentIdAsync(studentId);
