@@ -31,6 +31,21 @@ namespace ExamSystem.Data.Repository
                    .ToListAsync();
         }
 
+        public async Task<IEnumerable<ExamGroup>> GetAvailableExamsByStudentIdAsync(Guid studentId)
+        {
+            return await _dbSet
+                .Where(eg => _context.student_group
+                    .Any(sg => sg.StudentId == studentId && sg.GroupId == eg.GroupId))
+                .Include(eg => eg.Exam)
+                    .ThenInclude(e => e.Teacher)
+                        .ThenInclude(t => t.User)
+                .Include(eg => eg.Exam)
+                    .ThenInclude(e => e.ExamQuestions)
+                .Include(eg => eg.Group)
+                    .ThenInclude(g => g.Subject)
+                .ToListAsync();
+        }
+
         public async Task<int> GetExamCountByGroupIdAsync(Guid groupId)
         {
             return await _dbSet.CountAsync(e => e.GroupId == groupId);

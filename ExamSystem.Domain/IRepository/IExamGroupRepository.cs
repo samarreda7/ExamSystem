@@ -13,6 +13,7 @@ namespace ExamSystem.Domain.IRepository
         Task<ExamGroup?> GetByIdAsync(Guid examId, Guid groupId);
         Task<IEnumerable<ExamGroup>> GetByExamAsync(Guid examId);
         Task<IEnumerable<ExamGroup>> GetByGroupAsync(Guid groupId);
+        Task<IEnumerable<ExamGroup>> GetAvailableExamsByStudentIdAsync(Guid studentId);
         Task<int> GetExamCountByGroupIdAsync(Guid groupId);
         Task<int> GetAssignedExamCountByStudentIdAsync(Guid studentId);
         Task<bool> IsExamAssignedToGroupAsync(Guid examId, Guid groupId);

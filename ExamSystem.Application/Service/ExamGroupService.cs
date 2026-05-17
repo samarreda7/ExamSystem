@@ -90,6 +90,28 @@ namespace ExamSystem.Application.Service
             });
         }
 
+        public async Task<IEnumerable<ShowStudentAvailableExamDto>> GetAvailableExamsByStudentIdAsync(Guid studentId)
+        {
+            var student = await _unitofwork.Students.GetByIdAsync(studentId);
+            if (student == null)
+            {
+                throw new KeyNotFoundException($"There is no student with this id {studentId}");
+            }
+
+            var examGroups = await _unitofwork.ExamGroups.GetAvailableExamsByStudentIdAsync(studentId);
+
+            return examGroups
+                .GroupBy(eg => eg.ExamId)
+                .Select(group => new ShowStudentAvailableExamDto
+                {
+                    ExamId = group.Key,
+                    ExamName = group.First().Exam.Name,
+                    TeacherName = $"{group.First().Exam.Teacher.User.FirstName} {group.First().Exam.Teacher.User.LastName}",
+                    SubjectName = group.First().Group.Subject.Name,
+                    QuestionsCount = group.First().Exam.ExamQuestions.Count
+                });
+        }
+
         public async Task<int> GetExamCountByGroupIdAsync(Guid teacherId, Guid groupId)
         {
             var group = await _unitofwork.Groups.GetByIdAsync(groupId);

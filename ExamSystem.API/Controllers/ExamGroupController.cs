@@ -106,6 +106,27 @@ namespace ExamSystem.API.Controllers
         }
 
         [Authorize(Roles = nameof(RoleName.Student))]
+        [HttpGet("students/exams")]
+        public async Task<IActionResult> GetAvailableExamsByStudentIdAsync()
+        {
+            var studentIdClaim = User.FindFirst("uid")?.Value;
+            if (string.IsNullOrEmpty(studentIdClaim) || !Guid.TryParse(studentIdClaim, out Guid studentId))
+            {
+                return Unauthorized("Invalid token claims.");
+            }
+
+            try
+            {
+                var exams = await _examGroupService.GetAvailableExamsByStudentIdAsync(studentId);
+                return Ok(exams);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+        }
+
+        [Authorize(Roles = nameof(RoleName.Student))]
         [HttpGet("students/exams/count")]
         public async Task<IActionResult> GetAssignedExamCountByStudentIdAsync()
         {
