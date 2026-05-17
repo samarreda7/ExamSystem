@@ -12,6 +12,7 @@ namespace ExamSystem.Application.DTO
         public string Name { get; set; }
         public string SubjectName { get; set; }
         public string TeacherName { get; set; }
+        public Guid TeacherId { get; set; }
 
 
     }

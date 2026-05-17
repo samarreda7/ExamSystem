@@ -56,6 +56,7 @@ namespace ExamSystem.Application.Service
             {
                 Id = group.Id,
                 Name = group.Name,
+                TeacherId = teacherId,
                 TeacherName = user == null ? string.Empty : $"{user.FirstName} {user.LastName}",
                 SubjectName = subject?.Name ?? string.Empty
             };
@@ -68,6 +69,7 @@ namespace ExamSystem.Application.Service
             {
                 Id = s.Id,
                 Name = s.Name,
+                TeacherId = s.TeacherUserId,
                 TeacherName = $"{s.Teacher.User.FirstName} {s.Teacher.User.LastName}",
                 SubjectName=s.Subject.Name,       
 
@@ -87,6 +89,7 @@ namespace ExamSystem.Application.Service
             {
                 Id = group.Id,
                 Name = group.Name,
+                TeacherId = group.TeacherUserId,
                 TeacherName = $"{group.Teacher.User.FirstName} {group.Teacher.User.LastName}",
                 SubjectName = group.Subject.Name,
             };
@@ -116,6 +119,7 @@ namespace ExamSystem.Application.Service
             {
                 Id = s.Id,
                 Name = s.Name,
+                TeacherId = s.TeacherUserId,
                 TeacherName = $"{s.Teacher.User.FirstName} {s.Teacher.User.LastName}",
                 SubjectName = s.Subject.Name,
             });
