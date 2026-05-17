@@ -5,7 +5,7 @@ namespace ExamSystem.Application.IService
     public interface IExamGroupService
     {
         Task AssignExamToGroupAsync(Guid teacherId, AssignExamToGroupDto dto);
-        Task<IEnumerable<ShowExamByGroupIdForStudentDto>> GetExamsByGroupIdAsync(Guid studentId, Guid groupId);
+        Task<IEnumerable<ShowStudentAvailableExamDto>> GetExamsByGroupIdAsync(Guid studentId, Guid groupId);
         Task<IEnumerable<ShowStudentAvailableExamDto>> GetAvailableExamsByStudentIdAsync(Guid studentId);
         Task<int> GetExamCountByGroupIdAsync(Guid teacherId, Guid groupId);
         Task<int> GetAssignedExamCountByStudentIdAsync(Guid studentId);

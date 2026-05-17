@@ -26,6 +26,10 @@ namespace ExamSystem.Data.Repository
         {
             return await _dbSet.Where(e => e.GroupId == groupId)
                    .Include(e => e.Exam)
+                   .ThenInclude(e => e.Teacher)
+                   .ThenInclude(t => t.User)
+                   .Include(e => e.Exam)
+                   .ThenInclude(e => e.ExamQuestions)
                    .Include(e => e.Group)
                    .ThenInclude(g => g.Subject)
                    .ToListAsync();

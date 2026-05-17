@@ -60,7 +60,7 @@ namespace ExamSystem.Application.Service
             await _unitofwork.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<ShowExamByGroupIdForStudentDto>> GetExamsByGroupIdAsync(Guid studentId, Guid groupId)
+        public async Task<IEnumerable<ShowStudentAvailableExamDto>> GetExamsByGroupIdAsync(Guid studentId, Guid groupId)
         {
             var student = await _unitofwork.Students.GetByIdAsync(studentId);
             if (student == null)
@@ -82,11 +82,13 @@ namespace ExamSystem.Application.Service
 
             var examGroups = await _unitofwork.ExamGroups.GetByGroupAsync(groupId);
 
-            return examGroups.Select(eg => new ShowExamByGroupIdForStudentDto
+            return examGroups.Select(eg => new ShowStudentAvailableExamDto
             {
                 ExamId = eg.ExamId,
                 ExamName = eg.Exam.Name,
-                SubjectName = eg.Group.Subject.Name
+                TeacherName = $"{eg.Exam.Teacher.User.FirstName} {eg.Exam.Teacher.User.LastName}",
+                SubjectName = eg.Group.Subject.Name,
+                QuestionsCount = eg.Exam.ExamQuestions.Count
             });
         }
 
