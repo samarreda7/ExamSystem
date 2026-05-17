@@ -50,12 +50,13 @@ namespace ExamSystem.Application.Service
             await _unitofwork.SaveChangesAsync();
 
             var subject = await _unitofwork.Subjects.GetByIdAsync(group.SubjectId);
+            var user = await _unitofwork.Users.GetByIdAsync(teacherId);
 
             return new ShowGroupDto
             {
                 Id = group.Id,
                 Name = group.Name,
-                TeacherId = group.TeacherUserId,
+                TeacherName = user == null ? string.Empty : $"{user.FirstName} {user.LastName}",
                 SubjectName = subject?.Name ?? string.Empty
             };
         }
@@ -67,7 +68,7 @@ namespace ExamSystem.Application.Service
             {
                 Id = s.Id,
                 Name = s.Name,
-                TeacherId=s.Teacher.UserId,
+                TeacherName = $"{s.Teacher.User.FirstName} {s.Teacher.User.LastName}",
                 SubjectName=s.Subject.Name,       
 
             });
@@ -86,7 +87,7 @@ namespace ExamSystem.Application.Service
             {
                 Id = group.Id,
                 Name = group.Name,
-                TeacherId = group.TeacherUserId,
+                TeacherName = $"{group.Teacher.User.FirstName} {group.Teacher.User.LastName}",
                 SubjectName = group.Subject.Name,
             };
         }
@@ -115,7 +116,7 @@ namespace ExamSystem.Application.Service
             {
                 Id = s.Id,
                 Name = s.Name,
-                TeacherId = s.TeacherUserId,
+                TeacherName = $"{s.Teacher.User.FirstName} {s.Teacher.User.LastName}",
                 SubjectName = s.Subject.Name,
             });
         }

@@ -91,7 +91,7 @@ namespace ExamSystem.Application.Service
                 Id = sg.Group.Id,
                 Name = sg.Group.Name,
                 SubjectName = sg.Group.Subject.Name,
-                TeacherId = sg.Group.TeacherUserId
+                TeacherName = $"{sg.Group.Teacher.User.FirstName} {sg.Group.Teacher.User.LastName}"
             });
         }
 

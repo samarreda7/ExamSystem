@@ -19,6 +19,9 @@ namespace ExamSystem.Data.Repository
             return await _dbSet.Where(s => s.StudentId == studentId)
                 .Include(s => s.Group)
                 .ThenInclude(g => g.Subject)
+                .Include(s => s.Group)
+                .ThenInclude(g => g.Teacher)
+                .ThenInclude(t => t.User)
                 .ToListAsync();
         }
 

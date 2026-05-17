@@ -34,6 +34,7 @@ namespace ExamSystem.Data.Repository
         {
             return await _dbSet.Include(g => g.Subject)
                                .Include(g => g.Teacher)
+                               .ThenInclude(t => t.User)
                                .ToListAsync();
              
         }
@@ -43,6 +44,7 @@ namespace ExamSystem.Data.Repository
             return await _dbSet
                 .Include(g => g.Subject)
                 .Include(g => g.Teacher)
+                .ThenInclude(t => t.User)
                 .FirstOrDefaultAsync(g => g.Id == groupId);
         }
 
@@ -50,6 +52,7 @@ namespace ExamSystem.Data.Repository
         {
             return await _dbSet.Include(g => g.Subject)
                                .Include(g => g.Teacher)
+                               .ThenInclude(t => t.User)
                                .Where(g => g.TeacherUserId == teacherId)
                                .ToListAsync();
         }
