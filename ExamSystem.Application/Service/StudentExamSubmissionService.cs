@@ -132,5 +132,23 @@ namespace ExamSystem.Application.Service
             await _unitofwork.StudentExamResults.AddAsync(result);
             await _unitofwork.SaveChangesAsync();
         }
+
+        public async Task<bool> HasStudentSubmittedExamAsync(Guid studentId, Guid examId)
+        {
+            var student = await _unitofwork.Students.GetByIdAsync(studentId);
+            if (student == null)
+            {
+                throw new KeyNotFoundException($"there is no student with this id {studentId}");
+            }
+
+            var exam = await _unitofwork.Exams.GetByIdAsync(examId);
+            if (exam == null)
+            {
+                throw new KeyNotFoundException($"There is no exam with Id: {examId}");
+            }
+
+            var result = await _unitofwork.StudentExamResults.GetByStudentIdAndExamIdAsync(studentId, examId);
+            return result != null;
+        }
     }
 }

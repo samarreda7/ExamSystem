@@ -54,5 +54,26 @@ namespace ExamSystem.API.Controllers
                 return Conflict(new { error = ex.Message });
             }
         }
+
+        [Authorize(Roles = nameof(RoleName.Student))]
+        [HttpGet("{examId:guid}/is-submitted")]
+        public async Task<IActionResult> HasStudentSubmittedExamAsync([FromRoute] Guid examId)
+        {
+            var studentIdClaim = User.FindFirst("uid")?.Value;
+            if (string.IsNullOrEmpty(studentIdClaim) || !Guid.TryParse(studentIdClaim, out Guid studentId))
+            {
+                return Unauthorized("Invalid token claims.");
+            }
+
+            try
+            {
+                var isSubmitted = await _studentExamSubmissionService.HasStudentSubmittedExamAsync(studentId, examId);
+                return Ok(isSubmitted);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+        }
     }
 }
