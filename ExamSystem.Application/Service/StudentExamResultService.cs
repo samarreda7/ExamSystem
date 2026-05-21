@@ -44,18 +44,12 @@ namespace ExamSystem.Application.Service
             };
         }
 
-        public async Task<IEnumerable<ShowStudentExamScoreDto>> GetStudentScoresByGroupIdAndExamIdAsync(Guid teacherId, Guid groupId, Guid examId)
+        public async Task<IEnumerable<ShowStudentExamScoreDto>> GetStudentScoresByExamIdAsync(Guid teacherId, Guid examId)
         {
             var teacher = await _unitofwork.Teachers.GetByIdAsync(teacherId);
             if (teacher == null)
             {
                 throw new KeyNotFoundException($"there is no teacher with this Id {teacherId}");
-            }
-
-            var groupExists = await _unitofwork.Groups.IsGroupExistAsync(groupId);
-            if (!groupExists)
-            {
-                throw new KeyNotFoundException($"There is no group with Id: {groupId}");
             }
 
             var exam = await _unitofwork.Exams.GetByIdAsync(examId);
@@ -64,40 +58,44 @@ namespace ExamSystem.Application.Service
                 throw new KeyNotFoundException($"There is no exam with Id: {examId}");
             }
 
-            bool isGroupOwnedByTeacher = await _unitofwork.Groups.IsGroupOwnedByTeacherAsync(groupId, teacherId);
-            if (!isGroupOwnedByTeacher)
+            var examGroups = (await _unitofwork.ExamGroups.GetByExamAsync(examId))
+                .Where(x => x.Group.TeacherUserId == teacherId)
+                .ToList();
+
+            if (!examGroups.Any())
             {
-                throw new UnauthorizedAccessException("You can only view scores for your own groups.");
+                throw new UnauthorizedAccessException("You can only view scores for exams assigned to your own groups.");
             }
 
-            bool isExamAssignedToGroup = await _unitofwork.ExamGroups.IsExamAssignedToGroupAsync(examId, groupId);
-            if (!isExamAssignedToGroup)
+            int examScore = await _unitofwork.ExamQuestions.CountByExamIdAsync(examId);
+
+            var response = new List<ShowStudentExamScoreDto>();
+
+            foreach (var examGroup in examGroups)
             {
-                throw new InvalidOperationException("This exam is not assigned to this group.");
-            }
+                var studentGroups = (await _unitofwork.StudentGroup.GetStudentsByGroupIdAsync(examGroup.GroupId)).ToList();
+                var studentIds = studentGroups.Select(x => x.StudentId).ToList();
+                var results = (await _unitofwork.StudentExamResults.GetByExamIdAndStudentIdsAsync(examId, studentIds))
+                    .ToDictionary(x => x.StudentId, x => x);
 
-            var studentGroups = (await _unitofwork.StudentGroup.GetStudentsByGroupIdAsync(groupId)).ToList();
-            var studentIds = studentGroups.Select(x => x.StudentId).ToList();
-
-            var results = (await _unitofwork.StudentExamResults.GetByExamIdAndStudentIdsAsync(examId, studentIds))
-                .ToDictionary(x => x.StudentId, x => x);
-
-            int examScore = results.Values.FirstOrDefault()?.ExamScore
-                ?? await _unitofwork.ExamQuestions.CountByExamIdAsync(examId);
-
-            return studentGroups.Select(studentGroup =>
-            {
-                results.TryGetValue(studentGroup.StudentId, out var result);
-
-                return new ShowStudentExamScoreDto
+                response.AddRange(studentGroups.Select(studentGroup =>
                 {
-                    StudentId = studentGroup.StudentId,
-                    StudentFirstName = studentGroup.Student.User.FirstName,
-                    StudentLastName = studentGroup.Student.User.LastName,
-                    StudentScore = result?.StudentScore ?? 0,
-                    ExamScore = result?.ExamScore ?? examScore
-                };
-            });
+                    results.TryGetValue(studentGroup.StudentId, out var result);
+
+                    return new ShowStudentExamScoreDto
+                    {
+                        GroupId = examGroup.GroupId,
+                        GroupName = examGroup.Group.Name,
+                        StudentId = studentGroup.StudentId,
+                        StudentFirstName = studentGroup.Student.User.FirstName,
+                        StudentLastName = studentGroup.Student.User.LastName,
+                        StudentScore = result?.StudentScore ?? 0,
+                        ExamScore = result?.ExamScore ?? examScore
+                    };
+                }));
+            }
+
+            return response;
         }
     }
 }

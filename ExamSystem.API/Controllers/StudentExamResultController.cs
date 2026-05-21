@@ -41,8 +41,8 @@ namespace ExamSystem.API.Controllers
         }
 
         [Authorize(Roles = nameof(RoleName.Teacher))]
-        [HttpGet("groups/{groupId:guid}/exams/{examId:guid}/scores")]
-        public async Task<IActionResult> GetStudentScoresByGroupIdAndExamIdAsync([FromRoute] Guid groupId, [FromRoute] Guid examId)
+        [HttpGet("exams/{examId:guid}/scores")]
+        public async Task<IActionResult> GetStudentScoresByExamIdAsync([FromRoute] Guid examId)
         {
             var teacherIdClaim = User.FindFirst("uid")?.Value;
             if (string.IsNullOrEmpty(teacherIdClaim) || !Guid.TryParse(teacherIdClaim, out Guid teacherId))
@@ -53,7 +53,7 @@ namespace ExamSystem.API.Controllers
             try
             {
                 var scores = await _studentExamResultService
-                    .GetStudentScoresByGroupIdAndExamIdAsync(teacherId, groupId, examId);
+                    .GetStudentScoresByExamIdAsync(teacherId, examId);
 
                 return Ok(scores);
             }
