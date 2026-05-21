@@ -6,5 +6,6 @@ namespace ExamSystem.Domain.IRepository
     {
         Task<StudentExamResult?> GetByStudentIdAndExamIdAsync(Guid studentId, Guid examId);
         Task<IEnumerable<StudentExamResult>> GetByExamIdAndStudentIdsAsync(Guid examId, IEnumerable<Guid> studentIds);
+        Task<HashSet<Guid>> GetSubmittedExamIdsByStudentIdAsync(Guid studentId);
     }
 }

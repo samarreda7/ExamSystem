@@ -81,6 +81,7 @@ namespace ExamSystem.Application.Service
             }
 
             var examGroups = await _unitofwork.ExamGroups.GetByGroupAsync(groupId);
+            var submittedExamIds = await _unitofwork.StudentExamResults.GetSubmittedExamIdsByStudentIdAsync(studentId);
 
             return examGroups.Select(eg => new ShowStudentAvailableExamDto
             {
@@ -88,7 +89,8 @@ namespace ExamSystem.Application.Service
                 ExamName = eg.Exam.Name,
                 TeacherName = $"{eg.Exam.Teacher.User.FirstName} {eg.Exam.Teacher.User.LastName}",
                 SubjectName = eg.Group.Subject.Name,
-                QuestionsCount = eg.Exam.ExamQuestions.Count
+                QuestionsCount = eg.Exam.ExamQuestions.Count,
+                IsExamSubmitted = submittedExamIds.Contains(eg.ExamId)
             });
         }
 
@@ -101,6 +103,7 @@ namespace ExamSystem.Application.Service
             }
 
             var examGroups = await _unitofwork.ExamGroups.GetAvailableExamsByStudentIdAsync(studentId);
+            var submittedExamIds = await _unitofwork.StudentExamResults.GetSubmittedExamIdsByStudentIdAsync(studentId);
 
             return examGroups
                 .GroupBy(eg => eg.ExamId)
@@ -110,7 +113,8 @@ namespace ExamSystem.Application.Service
                     ExamName = group.First().Exam.Name,
                     TeacherName = $"{group.First().Exam.Teacher.User.FirstName} {group.First().Exam.Teacher.User.LastName}",
                     SubjectName = group.First().Group.Subject.Name,
-                    QuestionsCount = group.First().Exam.ExamQuestions.Count
+                    QuestionsCount = group.First().Exam.ExamQuestions.Count,
+                    IsExamSubmitted = submittedExamIds.Contains(group.Key)
                 });
         }
 

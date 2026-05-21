@@ -7,5 +7,6 @@ namespace ExamSystem.Application.DTO
         public required string TeacherName { get; set; }
         public required string SubjectName { get; set; }
         public int QuestionsCount { get; set; }
+        public bool IsExamSubmitted { get; set; }
     }
 }

@@ -24,5 +24,13 @@ namespace ExamSystem.Data.Repository
                 .Where(x => x.ExamId == examId && studentIdList.Contains(x.StudentId))
                 .ToListAsync();
         }
+
+        public async Task<HashSet<Guid>> GetSubmittedExamIdsByStudentIdAsync(Guid studentId)
+        {
+            return await _dbSet
+                .Where(x => x.StudentId == studentId)
+                .Select(x => x.ExamId)
+                .ToHashSetAsync();
+        }
     }
 }
